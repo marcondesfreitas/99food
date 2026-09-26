@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #131215; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #F8D60B; text-decoration: none; }
+  a:hover { color: #FDEF7A; }
+  button { font-family: inherit; border: 0; background: none; cursor: pointer; }
+  input { font-family: inherit; }
+  @keyframes shrink { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+  @keyframes halo { 0% { transform: scale(1); opacity: .32; } 100% { transform: scale(1.9); opacity: 0; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes dot { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+  @keyframes shimmer { 0% { background-position: -160px 0; } 100% { background-position: 240px 0; } }
+  @keyframes pulseval { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+  @keyframes breathe { 0%, 100% { opacity: .55; } 50% { opacity: .6; } }
+  @keyframes fadeout { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes riseup { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  @keyframes pinin { 0% { transform: scale(0); } 70% { transform: scale(1.14); } 100% { transform: scale(1); } }
+  @keyframes arcooval { from { stroke-dashoffset: 884; } to { stroke-dashoffset: 0; } }
+  @keyframes tremer { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } }
+  @keyframes bateu { 0% { transform: scale(1); } 50% { transform: scale(1.06); } 100% { transform: scale(1); } }
+  @keyframes chegou { 0% { transform: scale(1); } 45% { transform: scale(1.15); } 100% { transform: scale(1); } }
+  @keyframes bouncepin { 0% { transform: translateY(0); } 35% { transform: translateY(-8px); } 70% { transform: translateY(0); } 85% { transform: translateY(-3px); } 100% { transform: translateY(0); } }
+  @keyframes crossfade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes pushin { from { transform: translateX(100%); } to { transform: translateX(0); } }
+  @keyframes pushin2 { from { transform: translateX(100%); } to { transform: translateX(0); } }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; gap: 26px; padding: 36px 30px 56px; background: radial-gradient(1100px 700px at 50% -10%, #23212a 0%, #131215 70%);">
+
+  <div style="width: 216px; position: sticky; top: 36px; display: flex; flex-direction: column; gap: 12px;">
+    <div style="color: #F8D60B; font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;">RotaFácil · Motorista</div>
+    <div style="color: #78767d; font-size: 12px; line-height: 17px;">Protótipo v6 · 390×844. Cinco trajetos embutidos, todos sobre a malha viária, com halo branco e esquinas de ângulo real.</div>
+    <div style="display: flex; flex-direction: column; gap: 3px; margin-top: 2px;">
+      <sc-for list="{{ navItens }}" as="item" hint-placeholder-count="18">
+        <button onClick="{{ item.ir }}" style="display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 9px; background: {{ item.bg }}; color: {{ item.cor }}; font-size: 12.5px; font-weight: 600; text-align: left;" style-hover="background: #26242b; color: #fff;">
+          <span style="width: 16px; font-size: 10px; font-weight: 700; color: #5d5b61; font-variant-numeric: tabular-nums;">{{ item.n }}</span>
+          <span>{{ item.label }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="width: 414px; flex: none; padding: 12px; border-radius: 56px; background: linear-gradient(160deg, #37343c, #16151a); box-shadow: 0 40px 90px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.06);">
+    <div style="position: relative; width: 390px; height: 844px; overflow: hidden; border-radius: 44px; background: #FFFFFF; color: #1C1A1F;">
+
+      <div style="position: absolute; inset: 0; transform: {{ transformBase }}; transition: {{ transicaoBase }};">
+        <div onPointerDown="{{ panDown }}" onPointerMove="{{ panMove }}" onPointerUp="{{ panUp }}" onPointerCancel="{{ panUp }}" onDoubleClick="{{ zoomDuplo }}" style="position: absolute; inset: 0; touch-action: none; cursor: {{ cursorMapa }};">
+          <div style="position: absolute; inset: 0; transform: {{ transformMapa }}; transform-origin: 195px 422px; transition: {{ transicaoMapa }};">
+            <div style="position: absolute; left: -300px; top: -300px; width: 990px; height: 1444px; background: #ECE8E1;"></div>
+
+            <div style="position: absolute; left: -155px; top: 411px; width: 710px; height: 22px; background: #FDF6E3; transform: rotate(-32.33deg);"></div>
+
+            <sc-for list="{{ ruasV }}" as="r" hint-placeholder-count="7">
+              <div style="position: absolute; left: {{ r.left }}px; top: -300px; width: 10px; height: 1444px; background: #FFFFFF;"></div>
+            </sc-for>
+            <sc-for list="{{ ruasH }}" as="r" hint-placeholder-count="11">
+              <div style="position: absolute; left: -300px; top: {{ r.top }}px; width: 990px; height: 9px; background: #FFFFFF;"></div>
+            </sc-for>
+
+            <sc-for list="{{ quadras }}" as="q" hint-placeholder-count="8">
+              <div style="position: absolute; left: {{ q.left }}px; top: {{ q.top }}px; width: {{ q.w }}px; height: {{ q.h }}px; border-radius: {{ q.raio }}px; background: {{ q.cor }};"></div>
+            </sc-for>
+            <sc-for list="{{ rotulos }}" as="t" hint-placeholder-count="6">
+              <div style="position: absolute; left: {{ t.left }}px; top: {{ t.top }}px; font-size: 9px; letter-spacing: .04em; color: {{ t.cor }}; transform: rotate({{ t.rot }}deg); transform-origin: left center; white-space: nowrap;">{{ t.txt }}</div>
+            </sc-for>
+
+            <sc-if value="{{ hexVisivel }}" hint-placeholder-val="{{ true }}">
+              <div style="position: absolute; inset: 0; mix-blend-mode: multiply;">
+                <sc-for list="{{ hexes }}" as="hex" hint-placeholder-count="0">
+                  <div style="position: absolute; left: {{ hex.left }}px; top: {{ hex.top }}px; width: 150px; height: 172px; background: {{ hex.cor }}; opacity: {{ hex.op }}; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); animation: breathe {{ hex.dur }}s ease-in-out infinite;"></div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ rotaVisivel }}" hint-placeholder-val="{{ false }}">
+              <div style="position: absolute; inset: 0; animation: {{ animRota }};">
+                <svg width="390" height="844" viewBox="0 0 390 844" style="position: absolute; inset: 0; overflow: visible;">
+                  <path d="{{ rotaPath }}" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="{{ rotaPath }}" fill="none" stroke="#9D9CA1" stroke-opacity="0.5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="{{ rotaPath }}" fill="none" stroke="#3ED97F" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="{{ dashArray }}" stroke-dashoffset="{{ dashOffset }}"></path>
+                </svg>
+                <div style="position: absolute; left: {{ origemX }}px; top: {{ origemY }}px; width: 40px; height: 40px; margin: -20px 0 0 -20px; animation: {{ animPinOrigem }};">
+                  <div style="width: 40px; height: 40px; border-radius: 999px; background: #24D279; border: 3px solid #FFFFFF; box-shadow: 0 2px 8px rgba(0,0,0,.24); display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 17px; font-weight: 700;">↑</div>
+                </div>
+                <div style="position: absolute; left: {{ destinoX }}px; top: {{ destinoY }}px; width: 40px; height: 40px; margin: -20px 0 0 -20px; animation: {{ animPinDestino }};">
+                  <div style="width: 40px; height: 40px; border-radius: 999px; background: #EE542C; border: 3px solid #FFFFFF; box-shadow: 0 2px 8px rgba(0,0,0,.24); display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 17px; font-weight: 700;">↓</div>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="position: absolute; inset: 0; transform: {{ transformOverlay }}; transition: {{ transicaoMapa }};">
+            <sc-if value="{{ hexVisivel }}" hint-placeholder-val="{{ true }}">
+              <div style="position: absolute; inset: 0;">
+                <sc-for list="{{ pills }}" as="p" hint-placeholder-count="0">
+                  <div style="position: absolute; left: {{ p.left }}px; top: {{ p.top }}px; display: flex; align-items: center; gap: 5px; height: 30px; padding: 0 11px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 2px 8px rgba(0,0,0,.14);">
+                    <span style="width: 8px; height: 13px; background: #1C1A1F; clip-path: polygon(58% 0, 100% 0, 42% 44%, 92% 44%, 12% 100%, 40% 52%, 0 52%);"></span>
+                    <span style="font-size: 12px; font-weight: 700; color: #1C1A1F; font-variant-numeric: tabular-nums;">{{ p.faixa }}</span>
+                  </div>
+                </sc-for>
+                <sc-for list="{{ passageiros }}" as="pax" hint-placeholder-count="0">
+                  <div style="position: absolute; left: {{ pax.left }}px; top: {{ pax.top }}px; width: 44px; height: 44px; margin: -22px 0 0 -22px;">
+                    <div style="position: absolute; left: -6px; top: -6px; width: 56px; height: 56px; border-radius: 999px; background: #F8D60B; opacity: .22;"></div>
+                    <div style="position: absolute; inset: 0; border-radius: 999px; background: #FFFFFF; border: 3px solid #F8D60B; box-shadow: 0 2px 8px rgba(0,0,0,.16); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;">
+                      <div style="width: 7px; height: 7px; border-radius: 999px; background: #1C1A1F;"></div>
+                      <div style="width: 9px; height: 11px; background: #1C1A1F; clip-path: polygon(50% 0, 100% 42%, 72% 42%, 88% 100%, 62% 100%, 50% 62%, 38% 100%, 12% 100%, 28% 42%, 0 42%);"></div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <div style="position: absolute; left: {{ carroX }}px; top: {{ carroY }}px; width: 40px; height: 40px; margin: -20px 0 0 -20px; animation: {{ animMarcador }};">
+              <sc-if value="{{ haloVisivel }}" hint-placeholder-val="{{ true }}">
+                <div style="position: absolute; left: -12px; top: -12px; width: 64px; height: 64px; border-radius: 999px; background: #4A90D9; animation: halo 2s ease-out infinite;"></div>
+              </sc-if>
+              <div style="position: absolute; inset: 0; border-radius: 999px; background: #FFFFFF; border: 3px solid #4A90D9; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,.22);">
+                <div style="width: 14px; height: 16px; background: #4A90D9; clip-path: polygon(50% 0, 100% 100%, 50% 76%, 0 100%); transform: rotate({{ anguloMarcador }}deg);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <sc-if value="{{ mostrarUiMapa }}" hint-placeholder-val="{{ true }}">
+          <div style="position: absolute; left: 16px; right: 16px; top: 71px; display: flex; align-items: center; justify-content: space-between;">
+            <button onClick="{{ abrirEsq }}" style="position: relative; width: 44px; height: 44px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 2px 8px rgba(0,0,0,.14); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+              <div style="width: 16px; height: 2px; border-radius: 2px; background: #1C1A1F;"></div>
+              <div style="width: 16px; height: 2px; border-radius: 2px; background: #1C1A1F;"></div>
+              <div style="width: 16px; height: 2px; border-radius: 2px; background: #1C1A1F;"></div>
+              <div style="position: absolute; top: 5px; right: 6px; width: 8px; height: 8px; border-radius: 999px; background: #EB312B;"></div>
+            </button>
+            <button onClick="{{ irCentral }}" style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 999px; background: #26292E; box-shadow: 0 2px 8px rgba(0,0,0,.14);">
+              <span style="color: #FFFFFF; font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums;">{{ ganhosFmt }}</span>
+              <span style="width: 7px; height: 7px; border-right: 2px solid #FFFFFF; border-bottom: 2px solid #FFFFFF; transform: rotate(45deg); margin-top: -3px;"></span>
+            </button>
+            <div style="width: 44px;"></div>
+          </div>
+
+          <div style="position: absolute; left: 16px; bottom: 216px; width: 44px; height: 44px; border-radius: 999px; background: #4A90D9; box-shadow: 0 2px 8px rgba(0,0,0,.18); display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 17px; font-weight: 700;">✓</div>
+        </sc-if>
+
+        <div style="position: absolute; right: 16px; bottom: {{ fabBottom }}px; display: flex; flex-direction: column; gap: 12px; align-items: flex-end;">
+          <sc-if value="{{ mostrarRecentrar }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ recentrar }}" style="width: 44px; height: 44px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 2px 8px rgba(0,0,0,.18); display: flex; align-items: center; justify-content: center; animation: fadein 200ms ease-out both;">
+              <div style="width: 15px; height: 17px; background: #4A90D9; clip-path: polygon(50% 0, 100% 100%, 50% 76%, 0 100%);"></div>
+            </button>
+          </sc-if>
+          <sc-if value="{{ mostrarUiMapa }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ irTeste }}" style="width: 44px; height: 44px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 2px 8px rgba(0,0,0,.14); display: flex; align-items: center; justify-content: center;">
+              <div style="width: 20px; height: 17px; background: #1C1A1F; clip-path: polygon(50% 0, 100% 100%, 0 100%);"></div>
+            </button>
+          </sc-if>
+          <sc-if value="{{ mostrarUiMapa }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ toggleCamada }}" style="width: 44px; height: 44px; border-radius: 999px; background: {{ bgCamada }}; box-shadow: 0 2px 8px rgba(0,0,0,.14); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
+              <div style="width: 20px; height: 7px; background: {{ corCamada }}; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);"></div>
+              <div style="width: 20px; height: 7px; background: {{ corCamada }}; opacity: .55; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);"></div>
+            </button>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ bannerVisivel }}" hint-placeholder-val="{{ true }}">
+          <div style="position: absolute; left: 16px; right: 16px; bottom: 104px; height: 100px; border-radius: 12px; background: #F8D60B; box-shadow: 0 2px 8px rgba(0,0,0,.14); padding: 13px 15px; display: flex; align-items: center; justify-content: space-between; overflow: hidden;">
+            <div style="max-width: 210px;">
+              <div style="font-size: 13.5px; line-height: 17px; color: #1C1A1F;">Indique um motorista e <strong style="font-weight: 800;">ganhe R$ 500</strong> na RotaFácil</div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-top: 9px;">
+                <div style="display: flex;">
+                  <div style="width: 22px; height: 22px; border-radius: 999px; background: #26292E; border: 2px solid #F8D60B;"></div>
+                  <div style="width: 22px; height: 22px; border-radius: 999px; background: #5D5B61; border: 2px solid #F8D60B; margin-left: -8px;"></div>
+                </div>
+                <button style="padding: 6px 14px; border-radius: 999px; background: #E22808; font-size: 11.5px; font-weight: 700; color: #FFFFFF;">Quero indicar</button>
+              </div>
+            </div>
+            <div style="width: 76px; height: 68px; border-radius: 8px; background: repeating-linear-gradient(135deg, rgba(255,255,255,.75) 0 6px, rgba(255,255,255,.35) 6px 12px); display: flex; align-items: center; justify-content: center;">
+              <span style="font-family: ui-monospace, monospace; font-size: 8px; color: #7a6a00; text-align: center; line-height: 11px;">foto<br />indicação</span>
+            </div>
+            <button onClick="{{ fecharBanner }}" style="position: absolute; top: 6px; right: 8px; width: 20px; height: 20px; color: #1C1A1F; font-size: 13px; font-weight: 700;">✕</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ mostrarUiMapa }}" hint-placeholder-val="{{ true }}">
+          <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 88px; background: #FFFFFF; box-shadow: 0 -2px 12px rgba(0,0,0,.1); display: flex; align-items: flex-start; justify-content: space-between; padding: 8px 18px 0;">
+            <button onClick="{{ irPrefSolic }}" style="position: relative; width: 44px; height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+              <div style="width: 18px; height: 2px; border-radius: 2px; background: #1C1A1F;"></div>
+              <div style="width: 13px; height: 2px; border-radius: 2px; background: #1C1A1F;"></div>
+              <div style="width: 8px; height: 2px; border-radius: 2px; background: #1C1A1F;"></div>
+              <div style="position: absolute; top: 6px; right: 4px; width: 8px; height: 8px; border-radius: 999px; background: #EB312B;"></div>
+            </button>
+
+            <sc-if value="{{ slotConectar }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ conectar }}" style="width: 214px; height: 56px; border-radius: 999px; background: #F8D60B; font-size: 18px; font-weight: 700; color: #1C1A1F;" style-active="background: #E0C009; transform: scale(.97);">Conectar</button>
+            </sc-if>
+            <sc-if value="{{ slotCarregando }}" hint-placeholder-val="{{ false }}">
+              <div style="width: 214px; height: 56px; border-radius: 999px; background: #E0C009; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <span style="font-size: 18px; font-weight: 700; color: #1C1A1F;">Carregando</span>
+                <span style="display: flex; gap: 3px;">
+                  <span style="width: 4px; height: 4px; border-radius: 999px; background: #1C1A1F; animation: dot 1.2s ease-in-out infinite;"></span>
+                  <span style="width: 4px; height: 4px; border-radius: 999px; background: #1C1A1F; animation: dot 1.2s ease-in-out .4s infinite;"></span>
+                  <span style="width: 4px; height: 4px; border-radius: 999px; background: #1C1A1F; animation: dot 1.2s ease-in-out .8s infinite;"></span>
+                </span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ slotBuscando }}" hint-placeholder-val="{{ false }}">
+              <div style="width: 214px; height: 56px; border-radius: 999px; background: #F5F3F6; display: flex; align-items: center; justify-content: center;">
+                <span style="font-size: 18px; font-weight: 600; color: #5D5B61; background: linear-gradient(90deg, #5D5B61 0%, #DCDAE0 45%, #5D5B61 90%); background-size: 240px 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 1.8s linear infinite;">Buscando</span>
+              </div>
+            </sc-if>
+
+            <button onClick="{{ irCentral }}" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+              <div style="position: relative; width: 22px; height: 18px; border-radius: 6px; border: 2px solid #1C1A1F;">
+                <div style="position: absolute; left: 3px; bottom: -5px; width: 6px; height: 6px; background: #FFFFFF; border-right: 2px solid #1C1A1F; border-bottom: 2px solid #1C1A1F; transform: rotate(45deg);"></div>
+              </div>
+            </button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ temOferta }}" hint-placeholder-val="{{ false }}">
+          <div style="position: absolute; inset: 0; pointer-events: none;">
+            <button onClick="{{ recusar }}" style="position: absolute; right: 16px; top: 71px; display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 15px; border-radius: 999px; background: #26292E; box-shadow: 0 2px 8px rgba(0,0,0,.3); pointer-events: auto;">
+              <span style="color: #FFFFFF; font-size: 14px; font-weight: 700;">✕</span>
+              <span style="color: #FFFFFF; font-size: 13.5px; font-weight: 600;">Não afeta a TA</span>
+            </button>
+
+            <div onClick="{{ aceitar }}" style="position: absolute; left: 0; right: 0; bottom: 0; height: 412px; border-radius: 24px 24px 0 0; background: #26292E; box-shadow: 0 -8px 24px rgba(0,0,0,.25); padding: 18px 20px 26px; animation: riseup 320ms cubic-bezier(.2,.8,.2,1) both; cursor: pointer; pointer-events: auto;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="padding: 6px 11px; border-radius: 999px; background: #454851; color: #FFFFFF; font-size: 12px; font-weight: 600;">Pgto. no app</span>
+                <span style="padding: 6px 11px; border-radius: 999px; background: #176C4B; color: #65D3A6; font-size: 12px; font-weight: 600;">Prioritário</span>
+                <span style="flex: 1;"></span>
+                <span style="width: 30px; height: 30px; border-radius: 999px; background: #454851; color: #FFFFFF; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center;">1</span>
+              </div>
+
+              <div style="margin-top: 12px; font-size: 44px; font-weight: 700; line-height: 48px; color: #FFFFFF; font-variant-numeric: tabular-nums; transform-origin: left center; animation: {{ animValor }};">{{ oferta.valorFmt }}</div>
+              <div style="font-size: 13px; color: #A09EA1; margin-top: 1px;">{{ oferta.porKm }}</div>
+
+              <div style="position: relative; margin: 16px -20px 0; height: 5px; background: #353A48;">
+                <div style="height: 5px; background: #24D279; transform-origin: left; animation: shrink {{ duracao }}s linear forwards;"></div>
+                <button onClick="{{ aceitar }}" style="position: absolute; right: 12px; top: -14px; width: 34px; height: 34px; border-radius: 999px; background: #454851; box-shadow: 0 2px 8px rgba(0,0,0,.35); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;">
+                  <div style="width: 9px; height: 6px; border: 2px solid #FFFFFF; border-bottom: 0; border-radius: 4px 4px 0 0;"></div>
+                  <div style="width: 13px; height: 9px; border-radius: 2px; background: #FFFFFF;"></div>
+                </button>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 7px; margin-top: 18px;">
+                <span style="width: 15px; height: 15px; border-radius: 999px; border: 1.5px solid #F4C372; color: #F4C372; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center;">$</span>
+                <span style="font-size: 14px; font-weight: 700; color: #F4C372; font-variant-numeric: tabular-nums;">{{ oferta.dinamicoFmt }}</span>
+                <span style="font-size: 13px; color: #F4C372;">Tarifa base dinâmica incl.</span>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 7px; margin-top: 12px; font-size: 13px; color: #A09EA1;">
+                <span style="color: #FFFFFF;">★</span>
+                <span style="color: #FFFFFF; font-weight: 600; font-variant-numeric: tabular-nums;">{{ oferta.nota }}</span>
+                <span>· {{ oferta.corridas }} corridas ·</span>
+                <span style="color: #4A90D9; font-weight: 700;">☑</span>
+                <span>Perfil Essencial</span>
+              </div>
+
+              <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 13px;">
+                <div style="display: flex; gap: 12px; align-items: flex-start;">
+                  <div style="width: 26px; height: 26px; flex: none; border-radius: 999px; background: #24D279; color: #FFFFFF; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center;">↑</div>
+                  <div>
+                    <div style="font-size: 17px; font-weight: 600; color: #FFFFFF; line-height: 22px; font-variant-numeric: tabular-nums;">{{ oferta.tempoOrigem }}</div>
+                    <div style="font-size: 15px; color: #A09EA1; line-height: 20px;">{{ oferta.enderecoOrigem }}</div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 12px; align-items: flex-start;">
+                  <div style="width: 26px; height: 26px; flex: none; border-radius: 999px; background: #EE542C; color: #FFFFFF; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center;">↓</div>
+                  <div>
+                    <div style="font-size: 17px; font-weight: 600; color: #FFFFFF; line-height: 22px; font-variant-numeric: tabular-nums;">{{ oferta.tempoDestino }}</div>
+                    <div style="font-size: 15px; color: #A09EA1; line-height: 20px;">{{ oferta.enderecoDestino }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top: 14px; text-align: center; font-size: 12px; color: #6d6f76;">Toque no card ou no cadeado para aceitar</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ emCorrida }}" hint-placeholder-val="{{ false }}">
+          <div style="position: absolute; left: 0; right: 0; bottom: 0; height: {{ alturaSheet }}px; border-radius: 20px 20px 0 0; background: #FFFFFF; box-shadow: 0 -8px 24px rgba(0,0,0,.18); padding: 10px 16px 30px; transition: height 260ms cubic-bezier(.2,.8,.2,1);">
+            <button onClick="{{ alternarSnap }}" style="display: block; width: 100%; padding: 4px 0 12px;">
+              <div style="width: 40px; height: 4px; border-radius: 999px; background: #DCDAE0; margin: 0 auto;"></div>
+            </button>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 46px; height: 46px; border-radius: 999px; background: #26292E; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700;">{{ corrida.iniciais }}</div>
+              <div style="flex: 1;">
+                <div style="font-size: 17px; font-weight: 600;">{{ corrida.nome }}</div>
+                <div style="font-size: 13px; color: #5D5B61;">★ {{ corrida.nota }} · {{ categoriaAtiva }}</div>
+              </div>
+              <div style="padding: 6px 11px; border-radius: 999px; background: {{ corBadgeStatus }}; color: {{ corTextoBadge }}; font-size: 12px; font-weight: 700;">{{ rotuloStatus }}</div>
+            </div>
+
+            <div style="margin-top: 14px; padding: 12px; border-radius: 12px; background: #F9F7FA; display: flex; gap: 11px;">
+              <div style="width: 10px; height: 10px; margin-top: 5px; border-radius: 999px; background: {{ corTrechoAtual }}; flex: none;"></div>
+              <div>
+                <div style="font-size: 13px; color: #5D5B61;">{{ rotuloTrecho }}</div>
+                <div style="font-size: 15px; font-weight: 600; line-height: 20px;">{{ enderecoTrecho }}</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 14px; display: flex; gap: 10px;">
+              <div style="flex: 1; height: 46px; border-radius: 12px; border: 1px solid #DCDAE0; display: flex; align-items: center; justify-content: center; font-size: 16px;">✆</div>
+              <div style="flex: 1; height: 46px; border-radius: 12px; border: 1px solid #DCDAE0; display: flex; align-items: center; justify-content: center; font-size: 16px;">✉</div>
+              <div style="flex: 1; height: 46px; border-radius: 12px; border: 1px solid #DCDAE0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: #E31C5F;">Cancelar</div>
+            </div>
+
+            <sc-if value="{{ botaoAndando }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top: 16px; width: 100%; height: 56px; border-radius: 999px; background: #F5F3F6; display: flex; align-items: center; justify-content: center; gap: 9px;">
+                <span style="font-size: 17px; font-weight: 600; color: #9D9CA1;">{{ rotuloAndando }}</span>
+                <span style="display: flex; gap: 3px;">
+                  <span style="width: 4px; height: 4px; border-radius: 999px; background: #9D9CA1; animation: dot 1.2s ease-in-out infinite;"></span>
+                  <span style="width: 4px; height: 4px; border-radius: 999px; background: #9D9CA1; animation: dot 1.2s ease-in-out .4s infinite;"></span>
+                  <span style="width: 4px; height: 4px; border-radius: 999px; background: #9D9CA1; animation: dot 1.2s ease-in-out .8s infinite;"></span>
+                </span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ botaoSimples }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ avancarCorrida }}" style="margin-top: 16px; width: 100%; height: 56px; border-radius: 999px; background: {{ corBotaoAcao }}; font-size: 18px; font-weight: 700; color: {{ corTextoBotao }}; animation: crossfade 200ms ease-out both;">{{ rotuloBotao }}</button>
+            </sc-if>
+            <sc-if value="{{ botaoDeslizar }}" hint-placeholder-val="{{ false }}">
+              <div onPointerDown="{{ slideDown }}" onPointerMove="{{ slideMove }}" onPointerUp="{{ slideUp }}" onPointerCancel="{{ slideUp }}" style="position: relative; margin-top: 16px; height: 56px; border-radius: 999px; background: #26292E; overflow: hidden; touch-action: none; user-select: none; cursor: grab; animation: crossfade 200ms ease-out both;">
+                <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #FFFFFF; opacity: {{ opacidadeRotulo }};">Deslize para finalizar →</div>
+                <div style="position: absolute; left: 4px; top: 4px; width: 48px; height: 48px; border-radius: 999px; background: #F8D60B; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700; color: #1C1A1F; transform: translateX({{ slidePx }}px);">→</div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ drawerEsq }}" hint-placeholder-val="{{ false }}">
+          <div style="position: absolute; inset: 0;">
+            <button onClick="{{ fecharDrawer }}" style="position: absolute; inset: 0; background: rgba(0,0,0,.35);"></button>
+            <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 332px; background: #FFFFFF; box-shadow: 0 0 32px rgba(0,0,0,.3); padding: 71px 20px 20px; overflow: auto;">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 0 18px;">
+                <button onClick="{{ irPerfil }}" style="width: 76px; height: 76px; border-radius: 999px; background: {{ avatarBg }}; color: #FFFFFF; font-size: 22px; font-weight: 700; overflow: hidden; display: flex; align-items: center; justify-content: center;">{{ avatarConteudo }}</button>
+                <div style="font-size: 18px; font-weight: 600;">Diogo Marques · 5,00 ★</div>
+                <div style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 999px; background: #26292E; color: #FFFFFF; font-size: 12px; font-weight: 600;">{{ pillFase }}</div>
+              </div>
+              <div style="display: flex; gap: 12px; padding: 4px 0 18px;">
+                <div style="flex: 1;">
+                  <div style="font-size: 22px; font-weight: 700; color: #1C1A1F; font-variant-numeric: tabular-nums;">92%</div>
+                  <div style="font-size: 13px; color: #5D5B61;">Taxa de Aceitação</div>
+                </div>
+                <div style="flex: 1;">
+                  <div style="font-size: 22px; font-weight: 700; color: #E31C5F; font-variant-numeric: tabular-nums;">78%</div>
+                  <div style="font-size: 13px; color: #E31C5F;">Taxa de Finalização</div>
+                </div>
+              </div>
+              <div style="height: 1px; background: #EFEDF1; margin-bottom: 22px;"></div>
+              <div style="display: flex; flex-direction: column; gap: 30px;">
+                <button onClick="{{ irCentral }}" style="font-size: 17px; font-weight: 600; color: #1C1A1F; text-align: left;">Ganhos</button>
+                <div style="font-size: 17px; font-weight: 600;">Recompensas</div>
+                <div style="font-size: 17px; font-weight: 600;">Indique um amigo</div>
+                <div style="font-size: 17px; font-weight: 600;">Central de Ajuda</div>
+                <div style="font-size: 17px; font-weight: 600;">Notificações</div>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span style="font-size: 17px; font-weight: 600;">Central de Educação</span>
+                  <span style="width: 8px; height: 8px; border-radius: 999px; background: #EB312B;"></span>
+                </div>
+                <div style="font-size: 17px; font-weight: 600;">Loja</div>
+                <button onClick="{{ irVeiculos }}" style="display: flex; align-items: center; justify-content: space-between; width: 100%; font-size: 17px; font-weight: 600; color: #1C1A1F; text-align: left;">
+                  <span>Veículos</span>
+                  <span style="width: 7px; height: 7px; border-right: 2px solid #9D9CA1; border-bottom: 2px solid #9D9CA1; transform: rotate(-45deg);"></span>
+                </button>
+                <button onClick="{{ irConta }}" style="display: flex; align-items: center; justify-content: space-between; width: 100%; font-size: 17px; font-weight: 600; color: #1C1A1F; text-align: left;">
+                  <span>Horas Dirigidas</span>
+                  <span style="width: 7px; height: 7px; border-right: 2px solid #9D9CA1; border-bottom: 2px solid #9D9CA1; transform: rotate(-45deg);"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ telaFacial }}" hint-placeholder-val="{{ false }}">
+          <div style="position: absolute; inset: 0; background: #F9F7FA;">
+            <div style="position: relative; z-index: 3; height: 111px; background: #FFFFFF; display: flex; align-items: flex-end; padding: 0 16px 14px;">
+              <button onClick="{{ voltarMapa }}" style="width: 32px; font-size: 20px; text-align: left; color: #1C1A1F;">‹</button>
+              <div style="flex: 1; text-align: center; font-size: 18px; font-weight: 600; margin-right: 32px;">Reconhecimento facial</div>
+            </div>
+
+            <sc-if value="{{ semFoto }}" hint-placeholder-val="{{ false }}">
+              <div style="position: relative; z-index: 3; margin: 16px; padding: 14px; border-radius: 12px; background: #FEF8CC;">
+                <div style="font-size: 14px; line-height: 19px; color: #1C1A1F;">Adicione uma foto de perfil para agilizar a verificação.</div>
+                <button onClick="{{ irPerfil }}" style="margin-top: 8px; font-size: 13px; font-weight: 700; color: #7a6a00;">Adicionar agora ›</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ temFoto }}" hint-placeholder-val="{{ true }}">
+              <div style="position: relative; z-index: 3; display: flex; flex-direction: column; align-items: center; padding-top: 18px; animation: {{ animBateu }};">
+                <div style="width: 64px; height: 64px; border-radius: 999px; border: 2px solid #DCDAE0; overflow: hidden; background: repeating-linear-gradient(135deg, #DED9E2 0 7px, #CFC9D4 7px 14px); display: flex; align-items: center; justify-content: center;">
+                  <span style="font-family: ui-monospace, monospace; font-size: 7px; color: #5D5B61; text-align: center; line-height: 10px;">foto do<br />cadastro</span>
+                </div>
+                <div style="margin-top: 6px; font-size: 13px; color: rgba(255,255,255,.86);">Foto do seu cadastro</div>
+                <div style="width: 0; height: 24px; margin-top: 6px; border-left: 2px dashed rgba(255,255,255,.4);"></div>
+                <div style="margin-top: -13px; width: 26px; height: 26px; border-radius: 999px; background: #FFFFFF; border: 1px solid #DCDAE0; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #5D5B61;">↔</div>
+              </div>
+            </sc-if>
+
+            <div style="position: absolute; inset: 0; z-index: 1;">
+              <svg width="390" height="844" viewBox="0 0 390 844" style="position: absolute; inset: 0;">
+                <defs>
+                  <mask id="mascaraOvalV6">
+                    <rect x="0" y="0" width="390" height="844" fill="#FFFFFF"></rect>
+                    <ellipse cx="195" cy="452" rx="120" ry="160" fill="#000000"></ellipse>
+                  </mask>
+                </defs>
+                <rect x="0" y="0" width="390" height="844" fill="rgba(18,20,24,.72)" mask="url(#mascaraOvalV6)"></rect>
+              </svg>
+            </div>
+
+            <div style="position: absolute; left: 75px; top: 292px; z-index: 2; width: 240px; height: 320px; animation: {{ animOval }};">
+              <div style="position: absolute; inset: 0; clip-path: ellipse(120px 160px at 50% 50%); background: repeating-linear-gradient(135deg, #2b2930 0 8px, #222126 8px 16px); display: flex; align-items: center; justify-content: center;">
+                <span style="font-family: ui-monospace, monospace; font-size: 10px; color: #8b8994; text-align: center; line-height: 15px;">preview<br />câmera frontal</span>
+              </div>
+              <svg width="240" height="320" viewBox="0 0 240 320" style="position: absolute; inset: 0;">
+                <ellipse cx="120" cy="160" rx="120" ry="160" fill="none" stroke="{{ corOval }}" stroke-width="5" style="transition: stroke 280ms;"></ellipse>
+                <sc-if value="{{ facialVerificando }}" hint-placeholder-val="{{ true }}">
+                  <ellipse cx="120" cy="160" rx="120" ry="160" fill="none" stroke="{{ corOval }}" stroke-width="5" stroke-linecap="round" stroke-dasharray="884" stroke-dashoffset="884" transform="rotate(-90 120 160)" style="animation: arcooval 6s linear both;"></ellipse>
+                </sc-if>
+              </svg>
+              <sc-if value="{{ facialSucesso }}" hint-placeholder-val="{{ false }}">
+                <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 40px; font-weight: 700;">✓</div>
+              </sc-if>
+            </div>
+
+            <div style="position: absolute; left: 0; right: 0; bottom: 96px; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 18px; padding: 0 40px;">
+              <div style="text-align: center; font-size: 15px; line-height: 21px; color: #FFFFFF;">{{ facialTexto }}</div>
+              <sc-if value="{{ facialVerificando }}" hint-placeholder-val="{{ true }}">
+                <div style="width: 26px; height: 26px; border-radius: 999px; border: 3px solid rgba(255,255,255,.25); border-top-color: #4A90D9; animation: spin 1s linear infinite;"></div>
+              </sc-if>
+              <sc-if value="{{ facialFalha }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ reiniciarFacial }}" style="padding: 14px 28px; border-radius: 999px; background: #F8D60B; font-size: 16px; font-weight: 700; color: #1C1A1F;">Tentar novamente</button>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ telaResumo }}" hint-placeholder-val="{{ false }}">
+          <div style="position: absolute; inset: 0; background: #FFFFFF; padding: 71px 16px 24px; overflow: auto;">
+            <div style="font-size: 15px; color: #5D5B61; margin-top: 12px;">Corrida finalizada</div>
+            <div style="font-size: 44px; font-weight: 700; line-height: 48px; font-variant-numeric: tabular-nums;">{{ resumoValorFmt }}</div>
+            <div style="margin-top: 18px; border-radius: 12px; border: 1px solid #DCDAE0; overflow: hidden;">
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 13px 14px;">
+                <span style="font-size: 15px; color: #5D5B61;">Corrida</span>
+                <span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">{{ resumo.baseFmt }}</span>
+              </div>
+              <div style="height: 1px; background: #EFEDF1;"></div>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 13px 14px;">
+                <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 15px; color: #5D5B61;">
+                  Tarifa dinâmica
+                  <span style="padding: 3px 8px; border-radius: 999px; background: #FEF8CC; color: #7a6a00; font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums;">{{ resumo.faixa }}</span>
+                </span>
+                <span style="font-size: 15px; font-weight: 600; color: #C98A25; font-variant-numeric: tabular-nums;">{{ resumo.dinamicoFmt }}</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 16px;">
+              <div style="flex: 1; padding: 14px; border-radius: 12px; background: #F9F7FA;">
+                <div style="font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums;">{{ resumo.km }}</div>
+                <div style="font-size: 13px; color: #5D5B61;">quilômetros</div>
+              </div>
+              <div style="flex: 1; padding: 14px; border-radius: 12px; background: #F9F7FA;">
+                <div style="font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums;">{{ resumo.min }}</div>
+                <div style="font-size: 13px; color: #5D5B61;">minutos</div>
+              </div>
+            </div>
+            <div style="margin-top: 24px; font-size: 18px; font-weight: 600;">Como foi a viagem?</div>
+            <div style="display: flex; gap: 10px; margin-top: 12px;">
+              <sc-for list="{{ estrelasLista }}" as="e" hint-placeholder-count="5">
+                <button onClick="{{ e.set }}" style="width: 48px; height: 48px; font-size: 30px; line-height: 1; color: {{ e.cor }};">★</button>
+              </sc-for>
+            </div>
+            <button onClick="{{ concluirResumo }}" style="margin-top: 24px; width: 100%; height: 56px; border-radius: 999px; background: #F8D60B; font-size: 18px; font-weight: 700; color: #1C1A1F;">Enviar</button>
+            <button onClick="{{ irCentral }}" style="width: 100%; margin-top: 10px; font-size: 14px; font-weight: 600; color: #5D5B61;">Ver central de ganhos</button>
+          </div>
+        </sc-if>
+      </div>
+
+      <sc-if value="{{ pushVeu }}" hint-placeholder-val="{{ false }}">
+        <div style="position: absolute; inset: 0; z-index: 4; background: rgba(0,0,0,.08); pointer-events: none;"></div>
+      </sc-if>
+
+      <sc-if value="{{ pushAberto }}" hint-placeholder-val="{{ false }}">
+        <div style="position: absolute; inset: 0; z-index: 5; background: #F9F7FA; box-shadow: -10px 0 30px rgba(0,0,0,.22); transform: translateX({{ pushX }}px); transition: {{ transicaoPush }}; animation: {{ animPush }};">
+
+          <sc-if value="{{ telaPrefSolic }}" hint-placeholder-val="{{ false }}">
+            <div style="position: absolute; inset: 0; background: #F9F7FA; overflow: auto;">
+              <div style="height: 115px; background: #1C1A1F; display: flex; align-items: flex-end; gap: 12px; padding: 0 16px 16px;">
+                <button onClick="{{ voltarMapa }}" style="width: 28px; font-size: 22px; text-align: left; color: #FFFFFF;">‹</button>
+                <div style="font-size: 18px; font-weight: 600; color: #FFFFFF;">Preferências de solicitações</div>
+              </div>
+              <div style="padding: 0 16px 28px;">
+                <div style="font-size: 18px; font-weight: 700; color: #1C1A1F; margin: 24px 0 12px;">Ferramentas de aceitação</div>
+                <div style="border-radius: 12px; background: #FFFFFF; overflow: hidden;">
+                  <div style="display: flex; align-items: center; gap: 12px; height: 58px; padding: 0 14px;">
+                    <div style="width: 24px; height: 24px; flex: none; border-radius: 999px; border: 1.5px solid #1C1A1F; display: flex; align-items: center; justify-content: center;">
+                      <div style="width: 9px; height: 9px; background: #1C1A1F; clip-path: polygon(50% 0, 68% 62%, 100% 50%, 32% 100%, 50% 38%, 0 50%);"></div>
+                    </div>
+                    <div style="flex: 1; font-size: 17px;">Definir meu destino</div>
+                    <button onClick="{{ toggleDestino }}" style="width: 51px; height: 31px; border-radius: 999px; background: {{ corToggle }}; padding: 3px; display: flex; justify-content: {{ posToggle }};">
+                      <div style="width: 25px; height: 25px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,.2);"></div>
+                    </button>
+                  </div>
+                  <div style="height: 1px; margin-left: 50px; background: #EFEDF1;"></div>
+                  <button onClick="{{ irPrefServicos }}" style="display: flex; align-items: center; gap: 12px; width: 100%; height: 58px; padding: 0 14px; text-align: left;">
+                    <div style="width: 24px; height: 24px; flex: none; border-radius: 999px; border: 1.5px solid #1C1A1F; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #1C1A1F;">?</div>
+                    <div style="flex: 1; font-size: 17px; color: #1C1A1F;">Preferências de serviços</div>
+                    <div style="width: 7px; height: 7px; border-right: 2px solid #9D9CA1; border-bottom: 2px solid #9D9CA1; transform: rotate(-45deg);"></div>
+                  </button>
+                </div>
+
+                <div style="font-size: 18px; font-weight: 700; color: #1C1A1F; margin: 24px 0 12px;">Status da solicitação</div>
+                <div style="border-radius: 12px; background: #FFFFFF; overflow: hidden;">
+                  <button onClick="{{ irTeste }}" style="display: flex; align-items: center; gap: 12px; width: 100%; height: 58px; padding: 0 14px; text-align: left;">
+                    <div style="width: 24px; height: 24px; flex: none; border-radius: 999px; border: 1.5px solid #1C1A1F; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #1C1A1F;">✓</div>
+                    <div style="flex: 1; font-size: 17px; color: #1C1A1F;">Teste de status</div>
+                    <div style="width: 7px; height: 7px; border-right: 2px solid #9D9CA1; border-bottom: 2px solid #9D9CA1; transform: rotate(-45deg);"></div>
+                  </button>
+                  <div style="height: 1px; margin-left: 50px; background: #EFEDF1;"></div>
+                  <div style="display: flex; align-items: center; gap: 12px; height: 58px; padding: 0 14px;">
+                    <div style="width: 24px; height: 24px; flex: none; border-radius: 5px; border: 1.5px solid #1C1A1F; display: flex; flex-direction: column; align-items: center; padding-top: 3px; gap: 2px;">
+                      <div style="width: 14px; height: 1.5px; background: #1C1A1F;"></div>
+                      <div style="width: 14px; height: 8px; border-top: 1.5px solid #1C1A1F;"></div>
+                    </div>
+                    <div style="flex: 1; font-size: 17px;">Eventos futuros</div>
+                    <div style="width: 7px; height: 7px; border-right: 2px solid #9D9CA1; border-bottom: 2px solid #9D9CA1; transform: rotate(-45deg);"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ telaPrefServicos }}" hint-placeholder-val="{{ false }}">
+            <div style="position: absolute; inset: 0; background: #F9F7FA; overflow: auto;">
+              <div style="height: 115px; background: #1C1A1F; display: flex; align-items: flex-end; gap: 12px; padding: 0 16px 16px;">
+                <button onClick="{{ irPrefSolic }}" style="width: 28px; font-size: 22px; text-align: left; color: #FFFFFF;">‹</button>
+                <div style="font-size: 18px; font-weight: 600; color: #FFFFFF;">Preferências de serviços</div>
+              </div>
+              <div style="padding: 20px 16px 0;">
+                <div style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #9D9CA1;">PREFERÊNCIAS DE SOLICITAÇÕES</div>
+                <div style="font-size: 13px; color: #5D5B61; margin-top: 3px;">Selecione quais tipos de solicitação você quer receber</div>
+              </div>
+              <div style="margin: 12px 16px; border-radius: 12px; background: #FFFFFF; overflow: hidden;">
+                <sc-for list="{{ categorias }}" as="c" hint-placeholder-count="5">
+                  <div style="display: flex; align-items: center; gap: 12px; height: 62px; padding: 0 14px; border-bottom: 1px solid #EFEDF1;">
+                    <div style="flex: 1; font-size: 17px;">{{ c.nome }}</div>
+                    <button onClick="{{ c.toggle }}" style="width: 51px; height: 31px; border-radius: 999px; background: {{ c.bg }}; padding: 3px; display: flex; justify-content: {{ c.pos }};">
+                      <div style="width: 25px; height: 25px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,.2);"></div>
+                    </button>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="margin: 0 16px 24px; padding: 14px; border-radius: 12px; background: #FEF8CC; font-size: 13px; line-height: 18px; color: #7a6a00;">A lista acompanha o veículo ativo — hoje <strong style="font-weight: 700;">{{ tipoAtivo }}</strong>. Troque o veículo em Veículos para ver as outras listas.</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ telaTeste }}" hint-placeholder-val="{{ false }}">
+            <div style="position: absolute; inset: 0; background: #F9F7FA; padding: 59px 0 0; overflow: auto;">
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;">
+                <button onClick="{{ voltarPush }}" style="width: 32px; height: 32px; display: flex; align-items: center; font-size: 20px; color: #1C1A1F;">‹</button>
+                <div style="font-size: 18px; font-weight: 600;">Teste de status</div>
+                <button onClick="{{ reiniciarTeste }}" style="display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px; border: 1px solid #DCDAE0; font-size: 12.5px; font-weight: 600; color: #1C1A1F;">⟳ Tentar novamente</button>
+              </div>
+
+              <sc-if value="{{ testeRodando }}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; flex-direction: column; align-items: center; padding: 26px 0 22px;">
+                  <div style="position: relative; width: 130px; height: 130px;">
+                    <svg viewBox="0 0 130 130" width="130" height="130" style="transform: rotate(-90deg);">
+                      <circle cx="65" cy="65" r="60" fill="none" stroke="#EFEDF1" stroke-width="10"></circle>
+                      <circle cx="65" cy="65" r="60" fill="none" stroke="#1EC376" stroke-width="10" stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="{{ anelOffset }}" style="transition: stroke-dashoffset 600ms ease-out;"></circle>
+                    </svg>
+                    <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 700; font-variant-numeric: tabular-nums;">{{ anelTexto }}</div>
+                  </div>
+                  <div style="margin-top: 12px; font-size: 13px; color: #5D5B61;">Testando</div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ testeCompleto }}" hint-placeholder-val="{{ false }}">
+                <div style="display: flex; flex-direction: column; align-items: center; padding: 30px 0 10px;">
+                  <div style="position: relative; width: 200px; height: 108px;">
+                    <svg viewBox="0 0 200 108" width="200" height="108">
+                      <path d="M14 100 A86 86 0 0 1 186 100" fill="none" stroke="#EFEDF1" stroke-width="14" stroke-linecap="round"></path>
+                      <path d="M14 100 A86 86 0 0 1 186 100" fill="none" stroke="#1EC376" stroke-width="14" stroke-linecap="round"></path>
+                    </svg>
+                    <div style="position: absolute; left: 0; right: 0; bottom: 6px; text-align: center;">
+                      <div style="font-size: 22px; font-weight: 700;">Ótimo</div>
+                      <div style="font-size: 13px; color: #5D5B61;">Tudo certo</div>
+                    </div>
+                  </div>
+                </div>
+              </sc-if>
+
+              <div style="margin: 8px 16px 0; border-radius: 12px; background: #FFFFFF; border: 1px solid #DCDAE0; overflow: hidden;">
+                <sc-if value="{{ testeCompleto }}" hint-placeholder-val="{{ false }}">
+                  <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid #EFEDF1;">
+                    <span style="font-size: 15px; font-weight: 600;">Testes aprovados</span>
+                    <span style="width: 8px; height: 8px; border-top: 2px solid #5D5B61; border-right: 2px solid #5D5B61; transform: rotate(-45deg);"></span>
+                  </div>
+                </sc-if>
+                <sc-for list="{{ checklist }}" as="linha" hint-placeholder-count="6">
+                  <div style="display: flex; align-items: center; gap: 12px; height: 58px; padding: 0 16px; border-bottom: 1px solid #EFEDF1;">
+                    <div style="flex: 1; font-size: 15px; color: {{ linha.cor }};">{{ linha.nome }}</div>
+                    <sc-if value="{{ linha.pendente }}" hint-placeholder-val="{{ true }}">
+                      <div style="width: 24px; height: 24px; border-radius: 999px; border: 2px solid #DCDAE0;"></div>
+                    </sc-if>
+                    <sc-if value="{{ linha.testando }}" hint-placeholder-val="{{ false }}">
+                      <div style="width: 24px; height: 24px; border-radius: 999px; border: 2px solid #EFEDF1; border-top-color: #9D9CA1; animation: spin 1s linear infinite;"></div>
+                    </sc-if>
+                    <sc-if value="{{ linha.ok }}" hint-placeholder-val="{{ false }}">
+                      <div style="width: 24px; height: 24px; border-radius: 999px; background: #1EC376; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;">✓</div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="margin: 16px 16px 28px; padding: 16px 14px; border-radius: 12px; background: #FFFFFF; border: 1px solid #DCDAE0;">
+                <div style="font-size: 15px; font-weight: 700;">Como receber chamadas mais rápido?</div>
+                <button onClick="{{ voltarMapa }}" style="display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 12px; text-align: left;">
+                  <div style="width: 36px; height: 36px; flex: none; border-radius: 999px; background: #FEF8CC; display: flex; align-items: center; justify-content: center;">
+                    <span style="width: 10px; height: 16px; background: #7a6a00; clip-path: polygon(58% 0, 100% 0, 42% 44%, 92% 44%, 12% 100%, 40% 52%, 0 52%);"></span>
+                  </div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 15px; font-weight: 600;">Vá até uma área de alta demanda</div>
+                    <div style="font-size: 13px; color: #5D5B61; line-height: 17px;">Vá para área de alta demanda no Mapa de Chamadas e receba corridas mais rápido</div>
+                  </div>
+                  <div style="width: 7px; height: 7px; flex: none; border-right: 2px solid #9D9CA1; border-bottom: 2px solid #9D9CA1; transform: rotate(-45deg);"></div>
+                </button>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ telaCentral }}" hint-placeholder-val="{{ false }}">
+            <div style="position: absolute; inset: 0; background: #F9F7FA; padding: 59px 0 0; overflow: auto;">
+              <div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: #FFFFFF;">
+                <button onClick="{{ voltarMapa }}" style="width: 28px; font-size: 20px; text-align: left;">‹</button>
+                <div style="flex: 1; font-size: 18px; font-weight: 600;">Central de ganhos</div>
+                <div style="font-size: 15px; color: #5D5B61;">Histórico</div>
+              </div>
+
+              <div style="margin: 12px 16px 0; padding: 16px; border-radius: 12px; background: #F8D60B;">
+                <div style="font-size: 13px; color: #7a6a00;">Ganhos do dia (ago.20)</div>
+                <div style="font-size: 34px; font-weight: 700; line-height: 40px; font-variant-numeric: tabular-nums;">{{ ganhosFmt }}</div>
+                <div style="display: flex; gap: 24px; margin-top: 10px;">
+                  <div>
+                    <div style="font-size: 12px; color: #7a6a00;">Corridas</div>
+                    <div style="font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">{{ ganhosFmt }}</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 12px; color: #7a6a00;">Entregas</div>
+                    <div style="font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;">R$ 0,00</div>
+                  </div>
+                </div>
+                <div style="display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: rgba(0,0,0,.12); margin-top: 14px;">
+                  <div style="width: {{ pctBase }}%; background: #FFFFFF;"></div>
+                  <div style="width: {{ pctDin }}%; background: #E8833A;"></div>
+                </div>
+                <div style="display: flex; gap: 14px; margin-top: 6px; font-size: 11.5px; color: #7a6a00;">
+                  <span>base {{ baseFmt }}</span>
+                  <span>dinâmico {{ dinamicoFmt }}</span>
+                </div>
+              </div>
+
+              <div style="margin: 12px 16px 0; padding: 14px; border-radius: 12px; background: #FFFFFF; border: 1px solid #DCDAE0; display: flex; align-items: center; gap: 12px;">
+                <div style="width: 26px; height: 26px; background: #1C1A1F; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);"></div>
+                <div style="flex: 1;">
+                  <div style="font-size: 15px; font-weight: 600;">Rota RF</div>
+                  <div style="font-size: 13px; color: #5D5B61;">Disponível na sua fase</div>
+                </div>
+                <div style="font-size: 13px; color: #5D5B61;"><strong style="font-weight: 700; color: #1C1A1F;">3</strong> Vantagens ›</div>
+              </div>
+
+              <div style="margin: 20px 16px 0; font-size: 22px; font-weight: 700;">Meus recursos</div>
+              <div style="margin: 10px 16px 0; border-radius: 12px; background: #FFFFFF; border: 1px solid #DCDAE0; overflow: hidden;">
+                <div style="display: flex; align-items: center; gap: 12px; height: 68px; padding: 0 14px; border-bottom: 1px solid #EFEDF1;">
+                  <div style="width: 32px; height: 32px; border-radius: 999px; background: #4A90D9; color: #FFFFFF; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center;">$</div>
+                  <div style="flex: 1; font-size: 17px;">Saldo</div>
+                  <div style="font-size: 15px; color: #5D5B61; font-variant-numeric: tabular-nums;">{{ ganhosFmt }} ›</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px; height: 68px; padding: 0 14px; border-bottom: 1px solid #EFEDF1;">
+                  <div style="width: 32px; height: 32px; border-radius: 999px; background: #EB312B; color: #FFFFFF; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center;">$</div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 17px;">Método de resgate</div>
+                    <div style="font-size: 13px; color: #5D5B61;">Chave Pix</div>
+                  </div>
+                  <div style="width: 7px; height: 7px; border-right: 2px solid #9D9CA1; border-bottom: 2px solid #9D9CA1; transform: rotate(-45deg);"></div>
+                </div>
+                <button onClick="{{ irCarteira }}" style="display: flex; align-items: center; gap: 12px; width: 100%; height: 68px; padding: 0 14px; text-align: left;">
+                  <div style="width: 32px; height: 32px; border-radius: 999px; background: #EE542C; color: #FFFFFF; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center;">▮</div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 17px; color: #1C1A1F;">Conta RF</div>
+                    <div style="font-size: 13px; color: #5D5B61;">Saque quando quiser; aceita boleto</div>
+                  </div>
+                  <div style="font-size: 15px; color: #5D5B61; font-variant-numeric: tabular-nums;">{{ ganhosFmt }} ›</div>
+                </button>
+              </div>
+
+              <div style="margin: 20px 16px 0; font-size: 22px; font-weight: 700;">Melhore seus ganhos</div>
+              <div style="margin: 10px 16px 0; border-radius: 12px; background: #FFFFFF; border: 1px solid #DCDAE0; overflow: hidden;">
+                <div style="padding: 14px; border-bottom: 1px solid #EFEDF1;">
+                  <div style="font-size: 15px; font-weight: 600;">Recompensa por indicação</div>
+                  <div style="font-size: 13px; color: #5D5B61;">Convide novos motoristas e aumente seus ganhos</div>
+                </div>
+                <div style="padding: 14px;">
+                  <div style="font-size: 15px; font-weight: 600;">Recompensas</div>
+                  <div style="font-size: 13px; color: #5D5B61;">Confira suas recompensas mais recentes</div>
+                </div>
+              </div>
+
+              <div style="margin: 20px 16px 0; padding: 16px 14px 12px; border-radius: 12px; background: #FFFFFF; border: 1px solid #DCDAE0;">
+                <div style="font-size: 13px; color: #5D5B61; margin-bottom: 12px;">Por hora</div>
+                <div style="display: flex; align-items: flex-end; gap: 8px; height: 110px;">
+                  <sc-for list="{{ grafico }}" as="b" hint-placeholder-count="8">
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;">
+                      <div style="width: 100%; height: {{ b.h }}px; border-radius: 5px 5px 0 0; background: {{ b.cor }};"></div>
+                      <div style="font-size: 10px; color: #9D9CA1; font-variant-numeric: tabular-nums;">{{ b.hora }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="margin: 16px 16px 28px; border-radius: 12px; background: #FFFFFF; border: 1px solid #DCDAE0; overflow: hidden;">
+                <sc-if value="{{ semHistorico }}" hint-placeholder-val="{{ true }}">
+                  <div style="padding: 24px 16px; text-align: center;">
+                    <div style="font-size: 15px; font-weight: 600;">Nenhuma corrida ainda</div>
+                    <div style="font-size: 13px; color: #5D5B61; margin-top: 4px;">Conecte-se para receber ofertas.</div>
+                  </div>
+                </sc-if>
+                <sc-for list="{{ historico }}" as="h" hint-placeholder-count="0">
+                  <div style="display: flex; align-items: center; gap: 12px; padding: 14px; border-bottom: 1px solid #EFEDF1;">
+                    <div style="font-size: 13px; color: #9D9CA1; font-variant-numeric: tabular-nums;">{{ h.hora }}</div>
+                    <div style="flex: 1; font-size: 15px;">{{ h.endereco }}</div>
+                    <div style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">{{ h.valorFmt }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ telaCarteira }}" hint-placeholder-val="{{ false }}">
+            <div style="position: absolute; inset: 0; background: #FFFFFF; overflow: auto;">
+              <div style="background: #F5DA0A; padding: 59px 16px 22px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <button onClick="{{ irCentral }}" style="width: 28px; font-size: 20px; text-align: left;">‹</button>
+                  <div style="font-size: 18px; font-weight: 600;">Conta RF</div>
+                </div>
+                <div style="position: relative; margin-top: 14px; padding: 12px 34px 12px 12px; border-radius: 12px; background: #F6EF9E;">
+                  <div style="font-size: 12.5px; line-height: 17px; color: #1C1A1F;">De acordo com as exigências regulatórias do Banco Central do Brasil, você precisa adicionar seu endereço completo. Toque para começar.</div>
+                  <button style="position: absolute; top: 8px; right: 10px; font-size: 12px; font-weight: 700; color: #1C1A1F;">✕</button>
+                </div>
+                <div style="margin-top: 14px; padding: 16px; border-radius: 12px 12px 0 0; background: #FFFFFF;">
+                  <div style="display: flex; align-items: center; gap: 8px; font-size: 15px; color: #5D5B61;">
+                    Minha Carteira(R$)
+                    <span style="width: 18px; height: 12px; border-radius: 999px 999px 999px 999px / 60% 60% 60% 60%; border: 1.5px solid #5D5B61;"></span>
+                  </div>
+                  <div style="display: flex; align-items: baseline; justify-content: space-between; margin-top: 4px;">
+                    <div style="font-size: 44px; font-weight: 700; line-height: 48px; font-variant-numeric: tabular-nums;">{{ saldoFmt }}</div>
+                    <div style="width: 9px; height: 9px; border-right: 2px solid #9D9CA1; border-bottom: 2px solid #9D9CA1; transform: rotate(-45deg);"></div>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-radius: 0 0 12px 12px; background: #1E202F;">
+                  <div style="font-size: 13.5px; font-weight: 600; color: #FFFFFF;">✦ Adicionar cartão</div>
+                  <div style="font-size: 13px; color: #FFFFFF;">Desconto 0 ›</div>
+                </div>
+                <div style="display: flex; gap: 8px; margin-top: 18px;">
+                  <button onClick="{{ irPix }}" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 7px;">
+                    <div style="width: 30px; height: 30px; border-radius: 8px; background: #1C1A1F; color: #F5DA0A; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center;">◈</div>
+                    <span style="font-size: 12.5px; font-weight: 600; color: #1C1A1F; text-align: center;">Transferir com Pix</span>
+                  </button>
+                  <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 7px; opacity: .55;">
+                    <div style="width: 30px; height: 30px; border-radius: 8px; border: 2px solid #1C1A1F;"></div>
+                    <span style="font-size: 12.5px; color: #1C1A1F; text-align: center;">Escanear boleto</span>
+                  </div>
+                  <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 7px; opacity: .55;">
+                    <div style="width: 30px; height: 30px; border-radius: 999px; border: 2px solid #1C1A1F;"></div>
+                    <span style="font-size: 12.5px; color: #1C1A1F; text-align: center;">Receber Pix</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top: -12px; border-radius: 20px 20px 0 0; background: #FFFFFF; padding: 20px 16px 28px;">
+                <div style="font-size: 18px; font-weight: 700;">Serviços gerais</div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px;">
+                  <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="4">
+                    <div style="position: relative; height: 100px; border-radius: 12px; background: #F5F5F7; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 8px;">
+                      <div style="width: 36px; height: 36px; border-radius: 10px; background: #FFFFFF; border: 1px solid #DCDAE0;"></div>
+                      <span style="font-size: 12px; text-align: center; line-height: 15px;">{{ t.nome }}</span>
+                      <sc-if value="{{ t.badge }}" hint-placeholder-val="{{ false }}">
+                        <span style="position: absolute; top: 6px; right: 6px; padding: 2px 6px; border-radius: 999px; background: #51CD95; color: #FFFFFF; font-size: 9px; font-weight: 700;">Até 12X</span>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 14px; border-radius: 12px; border: 1px solid #DCDAE0;">
+                  <div style="width: 32px; height: 32px; border-radius: 8px; background: #F5F5F7;"></div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 15px; font-weight: 600;">Histórico de transações</div>
+                    <div style="font-size: 13px; color: #5D5B61;">Verifique todas as transações e recibos</div>
+                  </div>
+                  <div style="width: 7px; height: 7px; border-right: 2px solid #9D9CA1; border-bottom: 2px solid #9D9CA1; transform: rotate(-45deg);"></div>
+                </div>
+                <div style="font-size: 18px; font-weight: 700; margin-top: 20px;">Destaques</div>
+                <div style="display: flex; gap: 10px; margin-top: 10px; overflow: hidden;">
+                  <div style="width: 200px; flex: none; height: 96px; border-radius: 12px; background: #F5F5F7; display: flex; align-items: flex-end; padding: 12px; font-size: 13px; font-weight: 600;">RF Pay Informe</div>
+                  <div style="width: 200px; flex: none; height: 96px; border-radius: 12px; background: #F5F5F7;"></div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ telaPix }}" hint-placeholder-val="{{ false }}">
+            <div style="position: absolute; inset: 0; background: #FFFFFF; padding: 59px 0 0; overflow: auto;">
+              <div style="display: flex; align-items: center; padding: 12px 16px;">
+                <button onClick="{{ irCarteira }}" style="width: 28px; font-size: 20px; text-align: left;">‹</button>
+                <div style="flex: 1; text-align: center; font-size: 18px; font-weight: 600; margin-right: 28px;">Transferência Pix</div>
+              </div>
+              <div style="padding: 8px 16px 0; display: flex; flex-direction: column; gap: 18px;">
+                <label style="display: block;">
+                  <div style="font-size: 12.5px; color: #5D5B61;">Nome completo</div>
+                  <input value="{{ pixNome }}" onChange="{{ setPixNome }}" placeholder="Diogo Marques" style="width: 100%; margin-top: 4px; padding: 8px 0; font-size: 16px; color: #1C1A1F; border: 0; border-bottom: 1px solid #DCDAE0; outline: none;" />
+                </label>
+                <label style="display: block;">
+                  <div style="font-size: 12.5px; color: #5D5B61;">CPF/CNPJ</div>
+                  <input value="{{ pixCpf }}" onChange="{{ setPixCpf }}" placeholder="000.000.000-00" style="width: 100%; margin-top: 4px; padding: 8px 0; font-size: 16px; color: #1C1A1F; border: 0; border-bottom: 1px solid #DCDAE0; outline: none;" />
+                </label>
+                <div style="display: flex; gap: 12px;">
+                  <label style="flex: 7;">
+                    <div style="font-size: 12.5px; color: #5D5B61;">Número da conta</div>
+                    <input value="{{ pixConta }}" onChange="{{ setPixConta }}" placeholder="00000000" style="width: 100%; margin-top: 4px; padding: 8px 0; font-size: 16px; border: 0; border-bottom: 1px solid #DCDAE0; outline: none;" />
+                  </label>
+                  <label style="flex: 3;">
+                    <div style="font-size: 12.5px; color: #5D5B61;">Dígito</div>
+                    <input value="{{ pixDigito }}" onChange="{{ setPixDigito }}" placeholder="0" style="width: 100%; margin-top: 4px; padding: 8px 0; font-size: 16px; border: 0; border-bottom: 1px solid #DCDAE0; outline: none;" />
+                  </label>
+                </div>
+                <label style="display: block;">
+                  <div style="font-size: 12.5px; color: #5D5B61;">Número da agência</div>
+                  <input value="{{ pixAgencia }}" onChange="{{ setPixAgencia }}" placeholder="0001" style="width: 100%; margin-top: 4px; padding: 8px 0; font-size: 16px; border: 0; border-bottom: 1px solid #DCDAE0; outline: none;" />
+                </label>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid #DCDAE0;">
+                  <div>
+                    <div style="font-size: 12.5px; color: #5D5B61;">Instituição</div>
+                    <div style="font-size: 16px; margin-top: 4px;">Selecionar</div>
+                  </div>
+                  <div style="width: 7px; height: 7px; border-right: 2px solid #9D9CA1; border-bottom: 2px solid #9D9CA1; transform: rotate(-45deg);"></div>
+                </div>
+                <div>
+                  <div style="font-size: 15px; font-weight: 700;">Tipo de conta</div>
+                  <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 8px;">
+                    <sc-for list="{{ tiposConta }}" as="t" hint-placeholder-count="4">
+                      <button onClick="{{ t.set }}" style="display: flex; align-items: center; gap: 12px; padding: 12px 0; text-align: left;">
+                        <span style="width: 22px; height: 22px; border-radius: 999px; border: 2px solid {{ t.cor }}; display: flex; align-items: center; justify-content: center;">
+                          <span style="width: 11px; height: 11px; border-radius: 999px; background: {{ t.dot }};"></span>
+                        </span>
+                        <span style="font-size: 16px; color: #1C1A1F;">{{ t.nome }}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+              <div style="padding: 12px 16px 30px;">
+                <button onClick="{{ enviarPix }}" style="width: 100%; height: 56px; border-radius: 999px; background: {{ bgContinuar }}; color: {{ corContinuar }}; font-size: 18px; font-weight: 700;">Continuar</button>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ telaPerfil }}" hint-placeholder-val="{{ false }}">
+            <div style="position: absolute; inset: 0; background: #F9F7FA; padding: 59px 0 0; overflow: auto;">
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;">
+                <button onClick="{{ voltarMapa }}" style="width: 28px; font-size: 20px; text-align: left;">‹</button>
+                <button onClick="{{ irConfig }}" style="width: 24px; height: 24px; border-radius: 999px; border: 2px solid #1C1A1F; display: flex; align-items: center; justify-content: center;">
+                  <span style="width: 8px; height: 8px; border-radius: 999px; border: 2px solid #1C1A1F;"></span>
+                </button>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 12px 16px 20px;">
+                <button onClick="{{ abrirSheetFoto }}" style="position: relative; width: 96px; height: 96px;" style-active="transform: scale(.97);">
+                  <div style="position: absolute; inset: 0; border-radius: 999px; border: 3px solid #FFFFFF; overflow: hidden; background: {{ avatarBg }}; opacity: {{ avatarOpacidade }}; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 30px; font-weight: 700;">{{ avatarConteudo }}</div>
+                  <sc-if value="{{ fotoEnviando }}" hint-placeholder-val="{{ false }}">
+                    <div style="position: absolute; inset: -5px; border-radius: 999px; border: 3px solid #EFEDF1; border-top-color: #4A90D9; animation: spin 1s linear infinite;"></div>
+                  </sc-if>
+                  <div style="position: absolute; right: -2px; bottom: -2px; width: 32px; height: 32px; border-radius: 999px; background: #F8D60B; border: 2px solid #FFFFFF; display: flex; align-items: center; justify-content: center;">
+                    <span style="width: 15px; height: 12px; border-radius: 3px; border: 2px solid #1C1A1F;"></span>
+                  </div>
+                </button>
+                <div style="font-size: 22px; font-weight: 700; letter-spacing: .01em;">DIOGO MARQUES</div>
+                <button style="padding: 9px 18px; border-radius: 999px; border: 1px solid #DCDAE0; background: #FFFFFF; font-size: 13px; font-weight: 600;">Ver perfil público</button>
+              </div>
+              <div style="display: flex; gap: 12px; padding: 0 16px;">
+                <div style="flex: 1; padding: 14px; border-radius: 12px; background: #FFFFFF; border: 1px solid #DCDAE0;">
+                  <div style="font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums;">{{ totalCorridas }}</div>
+                  <div style="font-size: 13px; color: #5D5B61;">Corridas hoje</div>
+                </div>
+                <div style="flex: 1; padding: 14px; border-radius: 12px; background: #FFFFFF; border: 1px solid #DCDAE0;">
+                  <div style="font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums;">1</div>
+                  <div style="font-size: 13px; color: #5D5B61;">Dia</div>
+                </div>
+              </div>
+              <div style="margin: 16px 16px 24px; padding: 16px 14px; border-radius: 12px; background: #FFFFFF; border: 1px solid #DCDAE0;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between;">
+                  <div style="font-size: 22px; font-weight: 700;">Avaliação 4.92 <span style="color: #F8D60B;">★</span></div>
+                  <div style="font-size: 13px; color: #5D5B61;">Como funciona ›</div>
+                </div>
+                <div style="font-size: 13px; color: #9D9CA1; margin-top: 4px;">Média das 100 últimas avaliações de corridas</div>
+                <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 10px;">
+                  <sc-for list="{{ distribuicao }}" as="d" hint-placeholder-count="5">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <div style="font-size: 15px; width: 10px; font-variant-numeric: tabular-nums;">{{ d.n }}</div>
+                      <div style="font-size: 14px; color: #F8D60B;">★</div>
+                      <div style="flex: 1; height: 8px; border-radius: 999px; background: #EFEDF1; overflow: hidden;">
+                        <div style="height: 8px; width: {{ d.pct }}%; border-radius: 999px; background: #F8D60B;"></div>
+                      </div>
+                      <div style="font-size: 15px; color: #5D5B61; width: 24px; text-align: right; font-variant-numeric: tabular-nums;">{{ d.qtd }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ telaConfig }}" hint-placeholder-val="{{ false }}">
+            <div style="position: absolute; inset: 0; background: #F9F7FA; padding: 59px 0 0; overflow: auto;">
+              <div style="display: flex; align-items: center; padding: 12px 16px; background: #FFFFFF;">
+                <button onClick="{{ irPerfil }}" style="width: 28px; font-size: 20px; text-align: left;">‹</button>
+                <div style="flex: 1; text-align: center; font-size: 18px; font-weight: 600;">Perfil</div>
+                <button onClick="{{ voltarMapa }}" style="width: 28px; font-size: 16px; font-weight: 700; text-align: right;">✕</button>
+              </div>
+              <div style="height: 36px; background: #EFEFF1; display: flex; align-items: center; padding: 0 16px; font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #9D9CA1;">INFORMAÇÕES PESSOAIS</div>
+              <div style="background: #FFFFFF;">
+                <button onClick="{{ abrirSheetFoto }}" style="display: flex; align-items: center; gap: 12px; width: 100%; height: 64px; padding: 0 16px; text-align: left; border-bottom: 1px solid #EFEDF1;">
+                  <div style="width: 32px; height: 32px; border-radius: 999px; background: {{ avatarBg }}; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;">{{ avatarMini }}</div>
+                  <div style="flex: 1; font-size: 17px; color: #1C1A1F;">Foto de perfil</div>
+                  <div style="width: 7px; height: 7px; border-right: 2px solid #9D9CA1; border-bottom: 2px solid #9D9CA1; transform: rotate(-45deg);"></div>
+                </button>
+                <sc-for list="{{ camposPessoais }}" as="c" hint-placeholder-count="4">
+                  <div style="display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 16px; border-bottom: 1px solid #EFEDF1;">
+                    <div style="width: 32px; height: 32px; border-radius: 8px; background: #F5F5F7;"></div>
+                    <div style="flex: 1;">
+                      <div style="font-size: 17px;">{{ c.nome }}</div>
+                      <div style="font-size: 13px; color: #5D5B61;">{{ c.valor }}</div>
+                    </div>
+                    <div style="width: 7px; height: 7px; border-right: 2px solid #9D9CA1; border-bottom: 2px solid #9D9CA1; transform: rotate(-45deg);"></div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="height: 36px; background: #EFEFF1; display: flex; align-items: center; padding: 0 16px; font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #9D9CA1;">GERENCIAMENTO DE PERFIL</div>
+              <div style="background: #FFFFFF; margin-bottom: 28px;">
+                <div style="display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 16px; border-bottom: 1px solid #EFEDF1;">
+                  <div style="width: 32px; height: 32px; border-radius: 8px; background: #F5F5F7;"></div>
+                  <div style="flex: 1; font-size: 17px;">Documentos pendentes</div>
+                  <div style="width: 7px; height: 7px; border-right: 2px solid #9D9CA1; border-bottom: 2px solid #9D9CA1; transform: rotate(-45deg);"></div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 16px;">
+                  <div style="width: 32px; height: 32px; border-radius: 8px; background: #F5F5F7;"></div>
+                  <div style="flex: 1; font-size: 17px;">Gestão de dispositivo</div>
+                  <div style="width: 7px; height: 7px; border-right: 2px solid #9D9CA1; border-bottom: 2px solid #9D9CA1; transform: rotate(-45deg);"></div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ telaConta }}" hint-placeholder-val="{{ false }}">
+            <div style="position: absolute; inset: 0; background: #F9F7FA; padding: 59px 0 0; overflow: auto;">
+              <div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px;">
+                <button onClick="{{ voltarMapa }}" style="width: 28px; font-size: 20px; text-align: left;">‹</button>
+                <div style="font-size: 18px; font-weight: 600;">Horas Dirigidas</div>
+              </div>
+              <div style="margin: 12px 16px 0; padding: 24px; border-radius: 12px; background: #FFFFFF; border: 1px solid #DCDAE0; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                <button onClick="{{ abrirSheetFoto }}" style="position: relative; width: 88px; height: 88px;">
+                  <div style="position: absolute; inset: 0; border-radius: 999px; border: 3px solid #F8D60B; overflow: hidden; background: {{ avatarBg }}; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 26px; font-weight: 700;">{{ avatarConteudo }}</div>
+                  <div style="position: absolute; right: -2px; bottom: -2px; width: 30px; height: 30px; border-radius: 999px; background: #1C1A1F; border: 2px solid #FFFFFF; display: flex; align-items: center; justify-content: center;">
+                    <span style="width: 14px; height: 11px; border-radius: 3px; border: 2px solid #FFFFFF;"></span>
+                  </div>
+                </button>
+                <div style="font-size: 15px; color: #5D5B61;">Toque no ícone para mudar a foto</div>
+              </div>
+              <div style="margin: 12px 16px 0; padding: 16px; border-radius: 12px; background: #FFFFFF; border: 1px solid #DCDAE0; display: flex; flex-direction: column; gap: 14px;">
+                <label style="display: block;">
+                  <div style="font-size: 13px; font-weight: 700;">Nome do Perfil</div>
+                  <input value="{{ contaNome }}" onChange="{{ setContaNome }}" style="width: 100%; height: 52px; margin-top: 6px; padding: 0 12px; border-radius: 12px; border: 1px solid #DCDAE0; font-size: 16px; outline: none;" />
+                </label>
+                <label style="display: block;">
+                  <div style="font-size: 13px; font-weight: 700;">E-mail</div>
+                  <input value="{{ contaEmail }}" onChange="{{ setContaEmail }}" style="width: 100%; height: 52px; margin-top: 6px; padding: 0 12px; border-radius: 12px; border: 1px solid #DCDAE0; font-size: 16px; outline: none;" />
+                </label>
+                <label style="display: block;">
+                  <div style="font-size: 13px; font-weight: 700;">Número de Telefone</div>
+                  <input value="{{ contaTel }}" onChange="{{ setContaTel }}" style="width: 100%; height: 52px; margin-top: 6px; padding: 0 12px; border-radius: 12px; border: 1px solid #DCDAE0; font-size: 16px; outline: none;" />
+                </label>
+              </div>
+              <div style="padding: 16px 16px 30px;">
+                <button onClick="{{ salvarConta }}" style="width: 100%; height: 56px; border-radius: 999px; background: #F8D60B; font-size: 18px; font-weight: 700; color: #1C1A1F;">{{ rotuloSalvarConta }}</button>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ telaVeiculos }}" hint-placeholder-val="{{ false }}">
+            <div style="position: absolute; inset: 0; background: #F9F7FA; padding: 59px 0 110px; overflow: auto;">
+              <div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px;">
+                <button onClick="{{ voltarMapa }}" style="width: 28px; font-size: 20px; text-align: left;">‹</button>
+                <div style="font-size: 18px; font-weight: 600;">Veículo</div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 12px; padding: 4px 16px 0;">
+                <sc-for list="{{ veiculos }}" as="v" hint-placeholder-count="3">
+                  <button onClick="{{ v.ativar }}" style="display: block; width: 100%; padding: 16px; border-radius: 12px; background: #FFFFFF; border: 1px solid {{ v.borda }}; text-align: left;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="padding: 4px 10px; border-radius: 999px; border: 1px solid #9D9CA1; font-size: 12px; font-weight: 600; color: #5D5B61;">{{ v.tipo }}</span>
+                      <span style="padding: 4px 10px; border-radius: 999px; background: #E6F9EC; color: #24D279; font-size: 12px; font-weight: 700;">Aprovado</span>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px;">
+                      <div>
+                        <div style="font-size: 22px; font-weight: 700; line-height: 27px;">{{ v.modelo }}</div>
+                        <div style="font-size: 13px; color: #5D5B61; margin-top: 2px;">{{ v.placa }}</div>
+                      </div>
+                      <div style="width: 64px; height: 52px; flex: none; border-radius: 8px; background: repeating-linear-gradient(135deg, #F0EEF2 0 6px, #E4E1E8 6px 12px); display: flex; align-items: center; justify-content: center; font-family: ui-monospace, monospace; font-size: 8px; color: #9D9CA1; text-align: center;">{{ v.arte }}</div>
+                    </div>
+                    <div style="height: 1px; background: #EFEDF1; margin: 14px 0;"></div>
+                    <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: {{ v.corStatus }}; font-weight: {{ v.pesoStatus }};">
+                      <span>{{ v.marca }}</span>{{ v.status }}
+                    </div>
+                  </button>
+                </sc-for>
+              </div>
+              <button onClick="{{ abrirModalVeiculo }}" style="position: absolute; left: 16px; right: 16px; bottom: 34px; height: 56px; border-radius: 999px; background: #F8D60B; font-size: 18px; font-weight: 700; color: #1C1A1F;">Adicionar</button>
+            </div>
+          </sc-if>
+
+          <div onPointerDown="{{ bordaDown }}" onPointerMove="{{ bordaMove }}" onPointerUp="{{ bordaUp }}" onPointerCancel="{{ bordaUp }}" style="position: absolute; left: 0; top: 0; bottom: 0; width: 26px; z-index: 9; touch-action: none; cursor: {{ cursorBorda }};"></div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ modalVeiculo }}" hint-placeholder-val="{{ false }}">
+        <div style="position: absolute; inset: 0; z-index: 6;">
+          <button onClick="{{ fecharModalVeiculo }}" style="position: absolute; inset: 0; background: rgba(0,0,0,.4);"></button>
+          <div style="position: absolute; left: 0; right: 0; bottom: 0; border-radius: 20px 20px 0 0; background: #FFFFFF; padding: 18px 16px 34px; animation: riseup 280ms ease-out both;">
+            <div style="text-align: center; font-size: 18px; font-weight: 600;">Adicionar veículo</div>
+            <div style="display: flex; gap: 4px; margin-top: 16px; padding: 4px; border-radius: 999px; background: #F5F5F7; height: 48px;">
+              <sc-for list="{{ abasVeiculo }}" as="a" hint-placeholder-count="3">
+                <button onClick="{{ a.set }}" style="flex: 1; border-radius: 999px; background: {{ a.bg }}; box-shadow: {{ a.sombra }}; font-size: 14px; font-weight: {{ a.peso }}; color: {{ a.cor }};">{{ a.nome }}</button>
+              </sc-for>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px;">
+              <input value="{{ novoPlaca }}" onChange="{{ setNovoPlaca }}" placeholder="Placa" style="height: 56px; padding: 0 14px; border: 0; border-radius: 12px; background: #F5F5F7; font-size: 16px; outline: none;" />
+              <input value="{{ novoModelo }}" onChange="{{ setNovoModelo }}" placeholder="Modelo (ex: YAMAHA XTZ)" style="height: 56px; padding: 0 14px; border: 0; border-radius: 12px; background: #F5F5F7; font-size: 16px; outline: none;" />
+              <input value="{{ novoCor }}" onChange="{{ setNovoCor }}" placeholder="Cor" style="height: 56px; padding: 0 14px; border: 0; border-radius: 12px; background: #F5F5F7; font-size: 16px; outline: none;" />
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 18px;">
+              <button onClick="{{ fecharModalVeiculo }}" style="flex: 1; height: 52px; border-radius: 999px; background: #F5F5F7; font-size: 16px; font-weight: 600; color: #1C1A1F;">Cancelar</button>
+              <button onClick="{{ salvarVeiculo }}" style="flex: 1; height: 52px; border-radius: 999px; background: #F8D60B; font-size: 16px; font-weight: 700; color: #1C1A1F;">Salvar</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ sheetFoto }}" hint-placeholder-val="{{ false }}">
+        <div style="position: absolute; inset: 0; z-index: 7;">
+          <button onClick="{{ fecharSheetFoto }}" style="position: absolute; inset: 0; background: rgba(0,0,0,.4);"></button>
+          <div style="position: absolute; left: 10px; right: 10px; bottom: 34px; animation: riseup 280ms ease-out both;">
+            <div style="border-radius: 16px; background: #FFFFFF; overflow: hidden;">
+              <div style="padding: 14px; text-align: center; font-size: 13px; color: #5D5B61; border-bottom: 1px solid #EFEDF1;">Foto de perfil</div>
+              <button onClick="{{ tirarFoto }}" style="display: block; width: 100%; height: 56px; font-size: 17px; color: #1C1A1F; border-bottom: 1px solid #EFEDF1;">Tirar foto</button>
+              <button onClick="{{ tirarFoto }}" style="display: block; width: 100%; height: 56px; font-size: 17px; color: #1C1A1F;">Escolher da galeria</button>
+              <sc-if value="{{ temFoto }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ removerFoto }}" style="display: block; width: 100%; height: 56px; font-size: 17px; color: #EB312B; border-top: 1px solid #EFEDF1;">Remover foto atual</button>
+              </sc-if>
+            </div>
+            <button onClick="{{ fecharSheetFoto }}" style="width: 100%; height: 56px; margin-top: 8px; border-radius: 16px; background: #FFFFFF; font-size: 17px; font-weight: 700; color: #1C1A1F;">Cancelar</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ telaSplash }}" hint-placeholder-val="{{ true }}">
+        <div style="position: absolute; inset: 0; z-index: 8; background: linear-gradient(180deg, #F4BA10 0%, #F4AD09 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; animation: {{ animSplash }};">
+          <div style="position: absolute; inset: 0; opacity: .18;">
+            <sc-for list="{{ hexSplash }}" as="hx" hint-placeholder-count="10">
+              <div style="position: absolute; left: {{ hx.left }}px; top: {{ hx.top }}px; width: 150px; height: 172px; background: #FFFFFF; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);"></div>
+            </sc-for>
+          </div>
+          <div style="position: relative; width: 96px; height: 96px; border-radius: 999px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 800; letter-spacing: -.03em; color: #F4AD09;">RF</div>
+          <div style="position: relative; margin-top: 14px; font-size: 18px; font-weight: 600; color: #FFFFFF;">RotaFácil Motorista</div>
+          <div style="position: absolute; left: 0; right: 0; bottom: 46px; text-align: center; font-size: 13px; color: rgba(255,255,255,.7);">V7.10.26</div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ scrimStatus }}" hint-placeholder-val="{{ true }}">
+        <div style="position: absolute; left: 0; right: 0; top: 0; z-index: 8; height: 72px; background: linear-gradient(180deg, rgba(255,255,255,.92) 0%, rgba(255,255,255,.72) 62%, rgba(255,255,255,0) 100%); pointer-events: none;"></div>
+      </sc-if>
+
+      <div style="position: absolute; left: 0; right: 0; top: 0; z-index: 9; height: 59px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; pointer-events: none;">
+        <sc-if value="{{ statusBarEscura }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size: 14px; font-weight: 700; color: #1C1A1F; font-variant-numeric: tabular-nums; margin-top: 6px;">19:15</div>
+        </sc-if>
+        <sc-if value="{{ statusBarClara }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size: 14px; font-weight: 700; color: #FFFFFF; font-variant-numeric: tabular-nums; margin-top: 6px;">19:15</div>
+        </sc-if>
+        <div style="display: flex; align-items: center; gap: 5px; margin-top: 6px;">
+          <div style="display: flex; align-items: flex-end; gap: 2px;">
+            <div style="width: 3px; height: 4px; border-radius: 1px; background: {{ corStatusBar }};"></div>
+            <div style="width: 3px; height: 6px; border-radius: 1px; background: {{ corStatusBar }};"></div>
+            <div style="width: 3px; height: 8px; border-radius: 1px; background: {{ corStatusBar }};"></div>
+            <div style="width: 3px; height: 10px; border-radius: 1px; background: {{ corStatusBar }};"></div>
+          </div>
+          <div style="width: 22px; height: 11px; border-radius: 3px; border: 1.5px solid {{ corStatusBar }}; padding: 1.5px;">
+            <div style="width: 70%; height: 100%; border-radius: 1px; background: {{ corStatusBar }};"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="position: absolute; left: 50%; bottom: 8px; z-index: 9; width: 134px; height: 5px; margin-left: -67px; border-radius: 999px; background: {{ corHomeIndicator }}; pointer-events: none;"></div>
+    </div>
+  </div>
+
+  <sc-if value="{{ mostrarDebug }}" hint-placeholder-val="{{ true }}">
+    <div style="width: 238px; position: sticky; top: 36px; display: flex; flex-direction: column; gap: 13px; padding: 18px; border-radius: 16px; background: #1B1A1F; border: 1px solid #2b2a31;">
+      <div style="color: #9D9CA1; font-size: 10.5px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;">Painel de debug</div>
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <div style="color: #78767d; font-size: 11px;">estado</div>
+        <div style="color: #F8D60B; font-size: 14px; font-weight: 700; font-family: ui-monospace, monospace;">{{ estadoDebug }}</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <div style="color: #78767d; font-size: 11px;">trajeto · vértices</div>
+        <div style="color: #fff; font-size: 13px; font-family: ui-monospace, monospace;">{{ debugRota }}</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <div style="color: #78767d; font-size: 11px;">progresso · bearing</div>
+        <div style="color: #fff; font-size: 13px; font-family: ui-monospace, monospace;">{{ debugProgresso }}</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <div style="color: #78767d; font-size: 11px;">câmera</div>
+        <div style="color: {{ corDebugCamera }}; font-size: 13px; font-family: ui-monospace, monospace;">{{ debugCamera }}</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <div style="color: #78767d; font-size: 11px;">cluster mais quente</div>
+        <div style="color: #fff; font-size: 13px; font-family: ui-monospace, monospace;">{{ zonaDebug }}</div>
+      </div>
+      <div style="height: 1px; background: #2b2a31;"></div>
+      <button onClick="{{ toggleChuva }}" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 10px; background: {{ bgChuva }}; color: {{ corChuva }}; font-size: 12.5px; font-weight: 600;">
+        <span>Chuva ×1,7</span><span>{{ rotuloChuva }}</span>
+      </button>
+      <button onClick="{{ toggleEvento }}" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 10px; background: {{ bgEvento }}; color: {{ corEvento }}; font-size: 12.5px; font-weight: 600;">
+        <span>Evento ×3,0</span><span>{{ rotuloEvento }}</span>
+      </button>
+      <button onClick="{{ forcarOferta }}" style="padding: 10px 12px; border-radius: 10px; background: #F8D60B; color: #1C1A1F; font-size: 12.5px; font-weight: 700;">Gerar oferta agora</button>
+      <button onClick="{{ proximoTrajeto }}" style="padding: 10px 12px; border-radius: 10px; background: #26242b; color: #DCDAE0; font-size: 12.5px; font-weight: 600;">Trocar trajeto</button>
+      <button onClick="{{ pularChegada }}" style="padding: 10px 12px; border-radius: 10px; background: #26242b; color: #DCDAE0; font-size: 12.5px; font-weight: 600;">Pular para a chegada</button>
+      <button onClick="{{ resetar }}" style="padding: 10px 12px; border-radius: 10px; background: #26242b; color: #DCDAE0; font-size: 12.5px; font-weight: 600;">Reiniciar protótipo</button>
+      <div style="color: #5d5b61; font-size: 11px; line-height: 16px;">Cinco trajetos embutidos, todos sobre ruas: vértices a cada 12 px, esquinas de ângulo real e halo branco de 8 px. Distância e tempo do card vêm da geometria desenhada.</div>
+    </div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;demandaBase&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1.4,&quot;min&quot;:0.6,&quot;max&quot;:2.4,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Simulação&quot;,&quot;unit&quot;:&quot;×&quot;},&quot;duracaoOferta&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:15,&quot;min&quot;:8,&quot;max&quot;:25,&quot;step&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Simulação&quot;,&quot;unit&quot;:&quot;s&quot;},&quot;passageirosVisiveis&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:3,&quot;min&quot;:0,&quot;max&quot;:3,&quot;step&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Simulação&quot;},&quot;mostrarBanner&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Interface&quot;},&quot;mostrarDebug&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Interface&quot;}}">
+const CHECK = ['Status de internet', 'Localização', 'Status do perfil', 'Análise de documentos', 'Status da solicitação', 'Configurações da solicitação'];
+const NOMES = [['Marina Alves', 'MA', 4.88, 243], ['Rafael Souza', 'RS', 4.93, 128], ['Cléo Bastos', 'CB', 4.72, 33], ['Diego Nunes', 'DN', 4.81, 205]];
+
+const VERT = [-49, 23, 95, 167, 239, 311, 383, 455];
+const HORIZ = [-40, 46, 132, 218, 304, 390, 476, 562, 648, 734, 820, 906];
+const CX = 5, CY = 4.5;
+const HOME = [167 + CX, 562 + CY];
+function vx(i) { return i + CX; }
+function hy(i) { return i + CY; }
+function diag(x) { return 534 - 0.6333 * (x - 23); }
+
+const METRO_PX = 6;
+const ROTAS = [
+  {
+    origem: 'Avenida Paes de Barros, 1815, Mooca', destino: 'Rua Augusta, 2205, Jardins',
+    buscar: [HOME, [vx(167), hy(476)], [vx(95), hy(476)]],
+    viagem: [[vx(95), hy(476)], [vx(95), hy(304)], [vx(167), hy(304)], [vx(167), hy(218)], [vx(239), hy(218)], [vx(239), hy(132)], [vx(311), hy(132)]]
+  },
+  {
+    origem: 'Rua da Mooca, 2450, Mooca', destino: 'Avenida Rebouças, 1980, Pinheiros',
+    buscar: [HOME, [vx(239), hy(562)], [vx(239), hy(476)]],
+    viagem: [[vx(239), hy(476)], [vx(311), hy(476)], [vx(311), hy(304)], [vx(239), hy(304)], [vx(239), hy(218)], [vx(167), hy(218)], [vx(167), hy(132)], [vx(95), hy(132)]]
+  },
+  {
+    origem: 'Avenida Celso Garcia, 3200, Tatuapé', destino: 'Rua Vergueiro, 3185, Vila Mariana',
+    buscar: [HOME, [vx(167), hy(648)], [vx(95), hy(648)]],
+    viagem: [[vx(95), hy(648)], [vx(95), diag(vx(95))], [vx(167), diag(vx(167))], [vx(239), diag(vx(239))], [vx(311), diag(vx(311))], [vx(311), hy(218)], [vx(383), hy(218)]]
+  },
+  {
+    origem: 'Rua Bresser, 1490, Mooca', destino: 'Praça Silvio Romero, 90, Tatuapé',
+    buscar: [HOME, [vx(239), hy(562)], [vx(311), hy(562)]],
+    viagem: [[vx(311), hy(562)], [vx(311), hy(476)], [vx(239), hy(476)], [vx(239), hy(390)], [vx(167), hy(390)]]
+  },
+  {
+    origem: 'Rua Javari, 220, Mooca', destino: 'Avenida Sapopemba, 4100, Vila Prudente',
+    buscar: [HOME, [vx(95), hy(562)], [vx(95), hy(304)], [vx(23), hy(304)]],
+    viagem: [[vx(23), hy(304)], [vx(23), hy(476)], [vx(95), hy(476)], [vx(95), hy(562)], [vx(167), hy(562)], [vx(167), hy(648)], [vx(239), hy(648)], [vx(239), hy(734)], [vx(311), hy(734)], [vx(311), hy(648)], [vx(383), hy(648)]]
+  }
+];
+
+const CLUSTERS = [
+  { id: 'c1', x: -40, y: 104, base: 8.5, cells: [[0, 0], [1, 0], [0, 1]] },
+  { id: 'c2', x: 246, y: 268, base: 11, cells: [[0, 0], [0, 1]] },
+  { id: 'c3', x: 18, y: 424, base: 6, cells: [[0, 0]] },
+  { id: 'c4', x: 168, y: 556, base: 8, cells: [[0, 0], [1, 0]] },
+  { id: 'c5', x: -74, y: 688, base: 4.5, cells: [[0, 0]] }
+];
+const PAX = [[vx(167), hy(218)], [vx(311), hy(390)], [vx(95), hy(734)]];
+
+const CATEGORIAS = {
+  MOTO: ['Rota Moto', 'Rota Entrega Moto', 'Rota Moto Promocional', 'Rota Entrega Moto Empresas', 'Rota Food'],
+  CARRO: ['Pop', 'Entrega Carro', 'Negocia', 'Pop Expresso'],
+  BIKE: ['Rota Bike', 'Rota Entrega Bike']
+};
+const TIPOS_CONTA = ['Conta corrente', 'Conta-poupança', 'Conta de ganhos', 'Instituição de pagamento'];
+const TILES = [['Pagar boleto', true], ['Transferências', false], ['Recarregar celular', false], ['Gift Card', false]];
+const PUSH_TELAS = ['prefsolic', 'prefservicos', 'teste', 'central', 'carteira', 'pix', 'perfil', 'config', 'conta', 'veiculos'];
+const DUR_BUSCAR = 12, DUR_VIAGEM = 20;
+
+function fmt(n) { return 'R$ ' + n.toFixed(2).replace('.', ','); }
+function um(n) { return n.toFixed(1).replace('.', ','); }
+function faixaFmt(a, b) { return um(a) + 'X–' + um(b) + 'X'; }
+
+function preparar(pts) {
+  const s = [pts[0].slice()];
+  for (let i = 1; i < pts.length; i++) {
+    const a = pts[i - 1], b = pts[i];
+    const d = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    const n = Math.max(1, Math.round(d / 12));
+    for (let k = 1; k <= n; k++) s.push([a[0] + (b[0] - a[0]) * k / n, a[1] + (b[1] - a[1]) * k / n]);
+  }
+  const cum = [0];
+  for (let i = 1; i < s.length; i++) cum.push(cum[i - 1] + Math.hypot(s[i][0] - s[i - 1][0], s[i][1] - s[i - 1][1]));
+  let d = 'M' + s[0][0].toFixed(1) + ' ' + s[0][1].toFixed(1);
+  for (let i = 1; i < s.length; i++) d += ' L' + s[i][0].toFixed(1) + ' ' + s[i][1].toFixed(1);
+  return { s, cum, d, len: cum[cum.length - 1], vertices: pts.length };
+}
+
+function emT(prep, t) {
+  const alvo = Math.max(0, Math.min(1, t)) * prep.len;
+  const c = prep.cum;
+  let lo = 0, hi = c.length - 1;
+  while (lo < hi - 1) { const m = (lo + hi) >> 1; if (c[m] <= alvo) lo = m; else hi = m; }
+  const seg = c[hi] - c[lo];
+  const f = seg === 0 ? 0 : (alvo - c[lo]) / seg;
+  const a = prep.s[lo], b = prep.s[hi];
+  const ad = prep.s[Math.min(prep.s.length - 1, hi + 2)];
+  return { x: a[0] + (b[0] - a[0]) * f, y: a[1] + (b[1] - a[1]) * f, bearing: Math.atan2(ad[0] - a[0], -(ad[1] - a[1])) * 180 / Math.PI };
+}
+
+const TRAJETOS = ROTAS.map(r => {
+  const pb = preparar(r.buscar), pv = preparar(r.viagem);
+  return {
+    origem: r.origem, destino: r.destino, pb, pv,
+    km: Math.round(pv.len * METRO_PX / 100) / 10,
+    kmOrigem: Math.round(pb.len * METRO_PX / 100) / 10,
+    min: Math.max(3, Math.round(pv.len * METRO_PX / 1000 * 2.7)),
+    minOrigem: Math.max(2, Math.round(pb.len * METRO_PX / 1000 * 2.7))
+  };
+});
+
+const QUADRAS = [
+  { key: 'parque', left: vx(239) + 5, top: hy(132) + 4.5, w: 67, h: 81, raio: 12, cor: '#CDE3C4' },
+  { key: 'agua', left: vx(23) + 5, top: hy(734) + 4.5, w: 67, h: 81, raio: 14, cor: '#BFDDEA' },
+  { key: 'q1', left: vx(95) + 18, top: hy(218) + 18, w: 40, h: 48, raio: 6, cor: '#E1DDD5' },
+  { key: 'q2', left: vx(311) + 16, top: hy(476) + 20, w: 44, h: 44, raio: 6, cor: '#E1DDD5' },
+  { key: 'q3', left: vx(167) + 20, top: hy(648) + 18, w: 38, h: 46, raio: 6, cor: '#E1DDD5' },
+  { key: 'q4', left: vx(-49) + 16, top: hy(46) + 18, w: 44, h: 50, raio: 6, cor: '#E1DDD5' },
+  { key: 'q5', left: vx(383) + 14, top: hy(304) + 16, w: 46, h: 52, raio: 6, cor: '#E1DDD5' },
+  { key: 'parque2', left: vx(311) + 8, top: hy(820) + 6, w: 62, h: 74, raio: 12, cor: '#CDE3C4' }
+];
+const ROTULOS = [
+  { key: 'radial', left: 60, top: diag(60) - 16, txt: 'AV. RADIAL LESTE', cor: '#8d8a84', rot: -32.33 },
+  { key: 'paes', left: vx(239) + 14, top: hy(476) - 12, txt: 'AV. PAES DE BARROS', cor: '#8d8a84', rot: 0 },
+  { key: 'mooca', left: vx(95) + 14, top: hy(648) - 12, txt: 'R. DA MOOCA', cor: '#8d8a84', rot: 0 },
+  { key: 'bresser', left: vx(167) + 12, top: hy(304) + 16, txt: 'R. BRESSER', cor: '#8d8a84', rot: 90 },
+  { key: 'parque', left: vx(239) + 12, top: hy(132) + 60, txt: 'PARQUE DA MOOCA', cor: '#7e9a76', rot: 0 },
+  { key: 'agua', left: vx(23) + 12, top: hy(734) + 60, txt: 'REPRESA', cor: '#6f92a1', rot: 0 }
+];
+
+class Component extends DCLogic {
+  state = {
+    tela: 'splash', status: 'OFFLINE', drawer: null, oferta: null, fase: 'ativo',
+    corrida: null, corridaStatus: null, prog: 0, ang: 0, snap: 1, slide: 0, rotaIdx: 0,
+    offX: 0, offY: 0, zoom: 1, arrastando: false, segue: true, chegada: null,
+    testeStep: 0, facial: 'verificando', ganhos: 0, dinamico: 0, historico: [],
+    estrelas: 0, banner: true, camada: true, chuva: false, evento: false, zonas: [],
+    resumo: null, resumoValor: 0, destinoOn: false,
+    foto: 'ok', sheetFoto: false, modalVeiculo: false, catsOff: [],
+    pushX: 0, pushArrasto: false, pushSeq: 0,
+    veiculos: [
+      { tipo: 'MOTO', modelo: 'YAMAHA XTZ 250 LANDER', placa: 'SRE5J51 (BEGE)', arte: 'foto moto' },
+      { tipo: 'CARRO', modelo: 'Sem modelo', placa: 'GFRH', arte: 'foto carro' },
+      { tipo: 'BIKE', modelo: 'Sem modelo', placa: 'TGDY', arte: 'foto bike' }
+    ],
+    ativo: 0, novoTipo: 'MOTO', novoPlaca: '', novoModelo: '', novoCor: '',
+    contaNome: 'Diogo Marques', contaEmail: 'diogo.marques@exemplo.com', contaTel: '+55 11 98432-1170', contaSalvo: false,
+    pixNome: '', pixCpf: '', pixConta: '', pixDigito: '', pixAgencia: '', pixTipo: 'Conta corrente'
+  };
+
+  timers = [];
+  at(fn, ms) { const id = setTimeout(fn, ms); this.timers.push(id); return id; }
+  limpar() { this.timers.forEach(clearTimeout); this.timers = []; }
+
+  componentDidMount() {
+    this.zonas = this.criarZonas();
+    this.tickDemanda();
+    this.demandaId = setInterval(() => this.tickDemanda(), 2400);
+    this.at(() => this.setState({ tela: 'mapa' }), 1200);
+  }
+  componentWillUnmount() { this.limpar(); clearInterval(this.demandaId); cancelAnimationFrame(this.loopId); cancelAnimationFrame(this.raf); }
+
+  criarZonas() { return CLUSTERS.map(c => ({ id: c.id, x: c.x, y: c.y, cells: c.cells, base: c.base, pax: 3, mot: 3, mult: 1 })); }
+
+  tickDemanda() {
+    const fator = this.props.demandaBase ?? 1.4;
+    const chuva = this.state.chuva ? 1.7 : 1;
+    this.zonas.forEach((z, i) => {
+      const evento = this.state.evento && i === 1 ? 3 : 1;
+      z.pax = z.base * fator * chuva * evento * (0.78 + Math.random() * 0.44);
+      const quente = z.mult >= 1.4;
+      z.mot = Math.max(1, Math.min(14, z.mot + (quente ? 0.8 : -0.35) + (Math.random() - 0.5)));
+      const razao = z.pax / (z.mot + 1);
+      const novo = Math.min(2.5, Math.round((1 + Math.log2(Math.max(razao, 1)) * 0.5) * 10) / 10);
+      z.mult = Math.round((z.mult + (novo - z.mult) * 0.25) * 100) / 100;
+    });
+    this.setState({ zonas: this.zonas.map(z => ({ ...z })) });
+  }
+
+  faixaDe(z) {
+    const min = Math.max(1, Math.round(z.mult * 10) / 10);
+    return [min, Math.min(2.6, Math.round((min + 0.4) * 10) / 10)];
+  }
+  zonaQuente() { return this.zonas.reduce((a, b) => (b.mult > a.mult ? b : a), this.zonas[0]) || { mult: 1 }; }
+
+  trajeto() { return TRAJETOS[this.state.rotaIdx] || TRAJETOS[0]; }
+  prepAtual() { return this.state.corridaStatus === 'INDO_BUSCAR' ? this.trajeto().pb : this.trajeto().pv; }
+
+  alvoCamera(pt) {
+    const z = this.state.zoom;
+    return { x: 195 - (195 + (pt.x - 195) * z), y: 380 - (422 + (pt.y - 422) * z) };
+  }
+
+  iniciarLoop() {
+    cancelAnimationFrame(this.loopId);
+    this.ultimo = performance.now();
+    const passo = agora => {
+      const dt = Math.min(0.05, (agora - this.ultimo) / 1000);
+      this.ultimo = agora;
+      const s = this.state;
+      if (!s.corrida) return;
+      const move = (s.corridaStatus === 'INDO_BUSCAR' || s.corridaStatus === 'EM_VIAGEM') && !s.chegada;
+      const dur = s.corridaStatus === 'INDO_BUSCAR' ? DUR_BUSCAR : DUR_VIAGEM;
+      let prog = s.prog;
+      if (move) prog = Math.min(1, prog + dt / dur);
+      const pt = emT(this.prepAtual(), prog);
+      let ang = s.ang;
+      if (move) {
+        const d = ((pt.bearing - ang + 540) % 360) - 180;
+        ang = ang + d * (1 - Math.exp(-dt / 0.12));
+      }
+      const patch = { prog, ang };
+      if (s.segue) {
+        const alvo = this.alvoCamera(pt);
+        const k = 1 - Math.exp(-dt / 0.4);
+        patch.offX = s.offX + (alvo.x - s.offX) * k;
+        patch.offY = s.offY + (alvo.y - s.offY) * k;
+      }
+      this.setState(patch);
+      if (move && prog >= 1) this.chegar();
+      this.loopId = requestAnimationFrame(passo);
+    };
+    this.loopId = requestAnimationFrame(passo);
+  }
+
+  chegar() {
+    this.setState({ chegada: 'pulse' });
+    this.at(() => this.setState({ chegada: 'pin' }), 400);
+    this.at(() => this.setState({ chegada: 'botao' }), 800);
+  }
+
+  panDown(e) {
+    if (this.state.tela !== 'mapa') return;
+    this.pan0 = { x: e.clientX, y: e.clientY, px: this.state.offX, py: this.state.offY, t: performance.now() };
+    this.vel = { x: 0, y: 0 };
+    if (e.currentTarget.setPointerCapture) e.currentTarget.setPointerCapture(e.pointerId);
+    this.setState({ arrastando: true, segue: false });
+  }
+  panMove(e) {
+    if (!this.pan0) return;
+    const lim = this.state.corrida ? 340 : 180;
+    const nx = Math.max(-lim, Math.min(lim, this.pan0.px + (e.clientX - this.pan0.x)));
+    const ny = Math.max(-lim, Math.min(lim, this.pan0.py + (e.clientY - this.pan0.y)));
+    const dt = Math.max(16, performance.now() - this.pan0.t);
+    this.vel = { x: (nx - this.state.offX) / dt, y: (ny - this.state.offY) / dt };
+    this.pan0.t = performance.now();
+    this.setState({ offX: nx, offY: ny });
+  }
+  panUp() {
+    if (!this.pan0) return;
+    this.pan0 = null;
+    const v = this.vel || { x: 0, y: 0 };
+    const lim = this.state.corrida ? 340 : 180;
+    this.setState({
+      arrastando: false,
+      offX: Math.max(-lim, Math.min(lim, this.state.offX + v.x * 140)),
+      offY: Math.max(-lim, Math.min(lim, this.state.offY + v.y * 140))
+    });
+  }
+  zoomDuplo() {
+    if (this.state.tela !== 'mapa') return;
+    this.setState({ zoom: this.state.zoom >= 1.7 ? 1 : Math.round((this.state.zoom + 0.35) * 100) / 100, arrastando: false });
+  }
+  recentrar() {
+    if (this.state.corrida) return this.setState({ segue: true, arrastando: false });
+    this.setState({ offX: 0, offY: 0, zoom: 1, segue: true, arrastando: false });
+  }
+
+  bordaDown(e) {
+    this.borda0 = e.clientX;
+    if (e.currentTarget.setPointerCapture) e.currentTarget.setPointerCapture(e.pointerId);
+    this.setState({ pushArrasto: true });
+  }
+  bordaMove(e) { if (this.borda0 != null) this.setState({ pushX: Math.max(0, e.clientX - this.borda0) }); }
+  bordaUp() {
+    if (this.borda0 == null) return;
+    const soltar = this.state.pushX > 90;
+    this.borda0 = null;
+    this.setState({ pushArrasto: false, pushX: 0 });
+    if (soltar) this.voltarPush();
+  }
+
+  push(tela) {
+    this.limpar();
+    this.setState(s => ({ tela, drawer: null, oferta: null, modalVeiculo: false, sheetFoto: false, pushX: 0, pushArrasto: false, pushSeq: s.pushSeq + 1 }));
+    if (tela === 'teste') { this.setState({ testeStep: 0 }); this.rodarTeste(); }
+  }
+  voltarPush() {
+    const t = this.state.tela;
+    if (t === 'prefservicos') return this.push('prefsolic');
+    if (t === 'carteira' || t === 'pix') return this.push('central');
+    if (t === 'config') return this.push('perfil');
+    if (t === 'teste') return this.push('prefsolic');
+    this.setState({ tela: 'mapa', drawer: null, pushX: 0 });
+  }
+
+  irPara(id) {
+    this.limpar();
+    cancelAnimationFrame(this.loopId);
+    const base = { drawer: null, oferta: null, corrida: null, corridaStatus: null, resumo: null, prog: 0, ang: 0, chegada: null, slide: 0, modalVeiculo: false, sheetFoto: false, offX: 0, offY: 0, zoom: 1, segue: true };
+    if (PUSH_TELAS.indexOf(id) !== -1) { this.setState(base); return this.push(id); }
+    if (id === 'splash') { this.setState({ ...base, tela: 'splash', status: 'OFFLINE' }); this.at(() => this.setState({ tela: 'mapa' }), 1200); return; }
+    if (id === 'mapa') return this.setState({ ...base, tela: 'mapa', status: 'OFFLINE' });
+    if (id === 'menu') return this.setState({ ...base, tela: 'mapa', drawer: 'esq' });
+    if (id === 'facial') { this.setState({ ...base, tela: 'facial', facial: 'verificando' }); return this.rodarFacial(); }
+    if (id === 'buscando') { this.setState({ ...base, tela: 'mapa', status: 'BUSCANDO' }); return this.agendarOferta(4500); }
+    if (id === 'oferta') return this.setState({ ...base, tela: 'mapa', status: 'BUSCANDO' }, () => this.gerarOferta());
+    if (id === 'corrida') return this.setState({ ...base, tela: 'mapa', status: 'BUSCANDO' }, () => { this.gerarOferta(); this.at(() => this.aceitar(), 60); });
+    if (id === 'resumo') return this.setState({ ...base, tela: 'mapa', status: 'BUSCANDO' }, () => { this.gerarOferta(); this.at(() => { this.aceitar(); this.at(() => this.finalizar(), 80); }, 60); });
+    return this.setState({ ...base, tela: id });
+  }
+
+  conectar() {
+    this.setState({ status: 'CARREGANDO' });
+    this.at(() => { this.setState({ tela: 'facial', facial: 'verificando' }); this.rodarFacial(); }, 1400);
+  }
+  rodarFacial() {
+    this.at(() => {
+      this.setState({ facial: 'sucesso' });
+      this.at(() => { this.setState({ tela: 'mapa', status: 'BUSCANDO' }); this.agendarOferta(3400); }, 900);
+    }, 6100);
+  }
+  rodarTeste() { for (let i = 1; i <= 6; i++) this.at(() => this.setState({ testeStep: i }), i * 1150); }
+  agendarOferta(ms) { this.at(() => { if (this.state.status === 'BUSCANDO' && !this.state.oferta && !this.state.corrida) this.gerarOferta(); }, ms || 4200); }
+
+  gerarOferta() {
+    const [nome, iniciais, nota, corridas] = NOMES[Math.floor(Math.random() * NOMES.length)];
+    const idx = Math.floor(Math.random() * TRAJETOS.length);
+    const t = TRAJETOS[idx];
+    const [fmin, fmax] = this.faixaDe(this.zonaQuente());
+    const mult = Math.round((fmin + (fmax - fmin) * Math.random()) * 100) / 100;
+    const base = Math.round((6.5 + t.km * 1.05 + t.min * 0.32) * 20) / 20;
+    const valor = Math.round(base * mult * 20) / 20;
+    const dur = this.props.duracaoOferta ?? 15;
+    const oferta = {
+      nome, iniciais, nota: nota.toFixed(2).replace('.', ','), corridas,
+      valor, base, mult, km: t.km, min: t.min, faixa: faixaFmt(fmin, fmax),
+      valorFmt: fmt(valor), porKm: fmt(valor / t.km) + '/km',
+      dinamicoFmt: fmt(Math.round((valor - base) * 100) / 100),
+      tempoOrigem: t.minOrigem + 'min (' + um(t.kmOrigem) + 'km)',
+      tempoDestino: t.min + 'min (' + um(t.km) + 'km)',
+      enderecoOrigem: t.origem, enderecoDestino: t.destino
+    };
+    const pt = emT(t.pb, 0);
+    this.setState({ oferta, rotaIdx: idx, fase: 'ativo', status: 'BUSCANDO', tela: 'mapa', offX: 0, offY: 0, zoom: 1, segue: true, prog: 0, ang: pt.bearing, chegada: null });
+    this.at(() => this.setState({ fase: 'expirando' }), Math.max(500, (dur - 3) * 1000));
+    this.at(() => this.recusar(), dur * 1000);
+  }
+
+  recusar() { this.limpar(); this.setState({ oferta: null, fase: 'ativo' }); this.agendarOferta(4200); }
+
+  aceitar() {
+    this.limpar();
+    const o = this.state.oferta;
+    if (!o) return;
+    const pt = emT(this.trajeto().pb, 0);
+    this.setState({ corrida: o, corridaStatus: 'INDO_BUSCAR', oferta: null, prog: 0, snap: 1, ang: pt.bearing, chegada: null, segue: true });
+    this.iniciarLoop();
+  }
+
+  avancarCorrida() {
+    const st = this.state.corridaStatus;
+    if (st === 'INDO_BUSCAR') {
+      cancelAnimationFrame(this.loopId);
+      const pt = emT(this.trajeto().pv, 0);
+      this.setState({ corridaStatus: 'AGUARDANDO', prog: 0, chegada: 'botao', ang: pt.bearing });
+      this.iniciarLoop();
+      return;
+    }
+    if (st === 'AGUARDANDO') {
+      this.setState({ corridaStatus: 'EM_VIAGEM', prog: 0, chegada: null, segue: true });
+      this.iniciarLoop();
+    }
+  }
+
+  finalizar() {
+    this.limpar();
+    cancelAnimationFrame(this.loopId);
+    const o = this.state.corrida || this.state.oferta;
+    if (!o) return;
+    const dinamico = Math.round((o.valor - o.base) * 100) / 100;
+    const hora = 19 + this.state.historico.length % 4;
+    const historico = this.state.historico.concat([{
+      hora: hora + ':' + String((12 + this.state.historico.length * 9) % 60).padStart(2, '0'),
+      endereco: o.enderecoDestino.split(',')[0], valorFmt: fmt(o.valor), valor: o.valor, h: hora
+    }]);
+    this.setState({
+      tela: 'resumo', resumo: { baseFmt: fmt(o.base), dinamicoFmt: fmt(dinamico), faixa: o.faixa, km: um(o.km), min: o.min },
+      resumoValor: 0, estrelas: 0, corrida: null, corridaStatus: null, chegada: null,
+      ganhos: Math.round((this.state.ganhos + o.valor) * 100) / 100,
+      dinamico: Math.round((this.state.dinamico + dinamico) * 100) / 100,
+      historico, slide: 0, offX: 0, offY: 0, segue: true
+    });
+    const inicio = performance.now();
+    const anim = () => {
+      const t = Math.min(1, (performance.now() - inicio) / 900);
+      this.setState({ resumoValor: o.valor * (1 - Math.pow(1 - t, 3)) });
+      if (t < 1) this.raf = requestAnimationFrame(anim);
+    };
+    this.raf = requestAnimationFrame(anim);
+  }
+
+  slideDown(e) { this.arrSlide = true; this.x0 = e.clientX; if (e.currentTarget.setPointerCapture) e.currentTarget.setPointerCapture(e.pointerId); }
+  slideMove(e) { if (this.arrSlide) this.setState({ slide: Math.max(0, Math.min(302, e.clientX - this.x0)) }); }
+  slideUp() {
+    this.arrSlide = false;
+    if (this.state.slide > 250) { this.setState({ slide: 302 }); this.finalizar(); }
+    else this.setState({ slide: 0 });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const oferta = s.oferta, corrida = s.corrida;
+    const emCorrida = !!corrida;
+    const mapaBase = s.tela === 'mapa';
+    const dur = this.props.duracaoOferta ?? 15;
+    const [zmin, zmax] = this.zonas.length ? this.faixaDe(this.zonaQuente()) : [1, 1.4];
+    const z = s.zoom;
+    const t = this.trajeto();
+    const andando = emCorrida && (s.corridaStatus === 'INDO_BUSCAR' || s.corridaStatus === 'EM_VIAGEM') && !s.chegada;
+    const prep = emCorrida ? this.prepAtual() : t.pb;
+    const pt = emCorrida || oferta ? emT(prep, emCorrida ? s.prog : 0) : { x: HOME[0], y: HOME[1], bearing: 0 };
+    const totalBase = Math.round((s.ganhos - s.dinamico) * 100) / 100;
+    const horas = [16, 17, 18, 19, 20, 21, 22, 23];
+    const maxHora = Math.max(1, ...horas.map(h => s.historico.filter(x => x.h === h).reduce((a, b) => a + b.valor, 0)));
+    const maxPax = Math.max(0, Math.min(3, this.props.passageirosVisiveis ?? 3));
+    const tipoAtivo = (s.veiculos[s.ativo] || s.veiculos[0]).tipo;
+    const temFoto = s.foto === 'ok';
+    const pushAberto = PUSH_TELAS.indexOf(s.tela) !== -1;
+    const claro = s.tela === 'prefsolic' || s.tela === 'prefservicos';
+
+    const hexes = [], pills = [];
+    s.zonas.forEach(zn => {
+      const [mi, ma] = this.faixaDe(zn);
+      if (mi < 1.1) return;
+      const cor = mi >= 2.2 ? '#E9635B' : '#EF7D76';
+      zn.cells.forEach((c, ci) => {
+        hexes.push({ key: zn.id + '_' + ci, left: zn.x + c[0] * 150 + (c[1] % 2 ? 75 : 0), top: zn.y + c[1] * 129, cor, op: 0.55, dur: 3 + (ci % 3) * 0.4 });
+      });
+      const px = Math.max(10, Math.min(250, zn.x + 18)), py = Math.max(120, zn.y + 22);
+      pills.push({ key: zn.id, left: 195 + (px - 195) * z, top: 422 + (py - 422) * z, faixa: faixaFmt(mi, ma) });
+    });
+
+    const nav = [
+      ['splash', 'Splash'], ['mapa', 'Mapa · malha viária'], ['menu', 'Menu lateral'], ['prefsolic', 'Pref. solicitações ⤢'],
+      ['prefservicos', 'Pref. de serviços ⤢'], ['teste', 'Teste de status ⤢'], ['facial', 'Facial oval'], ['buscando', 'Mapa · buscando'],
+      ['oferta', 'Oferta · rota nas ruas'], ['corrida', 'Corrida · piloto automático'], ['resumo', 'Resumo'], ['central', 'Central de ganhos ⤢'],
+      ['carteira', 'Conta RF ⤢'], ['pix', 'Transferência Pix ⤢'], ['perfil', 'Perfil ⤢'], ['config', 'Config. de perfil ⤢'],
+      ['conta', 'Editar conta ⤢'], ['veiculos', 'Veículos ⤢']
+    ];
+    const telaAtiva = oferta ? 'oferta' : emCorrida ? 'corrida' : s.tela === 'mapa' ? (s.drawer === 'esq' ? 'menu' : s.status === 'BUSCANDO' ? 'buscando' : 'mapa') : s.tela;
+    const estadoDebug = oferta ? 'OFERTA_ATIVA' : emCorrida ? s.corridaStatus : s.tela === 'resumo' ? 'RESUMO_GANHOS' : s.tela !== 'mapa' ? s.tela.toUpperCase() : s.status;
+    const pixOk = s.pixNome.trim().length > 2 && s.pixCpf.trim().length > 5 && s.pixConta.trim().length > 3;
+    const soltou = emCorrida && !s.segue;
+    const foraDoCentro = !emCorrida && (Math.abs(s.offX) > 8 || Math.abs(s.offY) > 8 || z !== 1);
+
+    return {
+      navItens: nav.map(([id, label], i) => ({
+        key: id, n: String(i + 1).padStart(2, '0'), label, ir: () => this.irPara(id),
+        bg: telaAtiva === id ? '#2c2a33' : 'transparent', cor: telaAtiva === id ? '#F8D60B' : '#b6b4bb'
+      })),
+      ruasV: VERT.map(x => ({ key: 'v' + x, left: x })),
+      ruasH: HORIZ.map(y => ({ key: 'h' + y, top: y })),
+      quadras: QUADRAS, rotulos: ROTULOS,
+      hexes, pills,
+      passageiros: PAX.slice(0, maxPax).map((p, i) => ({ key: i, left: 195 + (p[0] - 195) * z, top: 422 + (p[1] - 422) * z })),
+      hexVisivel: mapaBase && s.camada && !oferta && !emCorrida,
+      hexSplash: [{ key: 'a', left: -50, top: 40 }, { key: 'b', left: 120, top: 40 }, { key: 'c', left: 290, top: 40 }, { key: 'd', left: 30, top: 168 }, { key: 'e', left: 200, top: 168 }, { key: 'f', left: -50, top: 296 }, { key: 'g', left: 120, top: 296 }, { key: 'h', left: 290, top: 296 }, { key: 'i', left: 30, top: 424 }, { key: 'j', left: 200, top: 424 }, { key: 'k', left: -50, top: 552 }, { key: 'l', left: 120, top: 552 }, { key: 'm', left: 290, top: 552 }, { key: 'n', left: 30, top: 680 }, { key: 'o', left: 200, top: 680 }],
+      carroX: 195 + (pt.x - 195) * z, carroY: 422 + (pt.y - 422) * z,
+      anguloMarcador: Math.round(s.ang * 10) / 10,
+      animMarcador: s.chegada === 'pulse' ? 'chegou 400ms ease-out both' : 'none',
+      haloVisivel: !andando || s.corridaStatus === 'AGUARDANDO',
+      rotaPath: prep.d,
+      dashArray: prep.len.toFixed(1) + ' ' + prep.len.toFixed(1),
+      dashOffset: (-(emCorrida ? s.prog : 0) * prep.len).toFixed(1),
+      animRota: 'fadein 700ms ease-out both',
+      origemX: t.pv.s[0][0], origemY: t.pv.s[0][1],
+      destinoX: t.pv.s[t.pv.s.length - 1][0], destinoY: t.pv.s[t.pv.s.length - 1][1],
+      animPinOrigem: s.chegada === 'pin' && s.corridaStatus === 'INDO_BUSCAR' ? 'bouncepin 400ms ease-out both' : 'pinin 320ms cubic-bezier(.2,.8,.2,1) 220ms both',
+      animPinDestino: s.chegada === 'pin' && s.corridaStatus === 'EM_VIAGEM' ? 'bouncepin 400ms ease-out both' : 'pinin 320ms cubic-bezier(.2,.8,.2,1) 340ms both',
+      rotaVisivel: mapaBase && (!!oferta || emCorrida),
+      transformMapa: 'translate(' + s.offX.toFixed(1) + 'px, ' + s.offY.toFixed(1) + 'px) scale(' + z + ')',
+      transformOverlay: 'translate(' + s.offX.toFixed(1) + 'px, ' + s.offY.toFixed(1) + 'px)',
+      transicaoMapa: s.arrastando || (emCorrida && s.segue) ? 'none' : 'transform 600ms cubic-bezier(.16,1,.3,1)',
+      cursorMapa: mapaBase && !oferta ? (s.arrastando ? 'grabbing' : 'grab') : 'default',
+      mostrarRecentrar: mapaBase && !oferta && (soltou || foraDoCentro),
+      fabBottom: emCorrida ? 348 : 216,
+      recentrar: () => this.recentrar(),
+      panDown: e => this.panDown(e), panMove: e => this.panMove(e), panUp: () => this.panUp(), zoomDuplo: () => this.zoomDuplo(),
+      emCorrida,
+      mostrarUiMapa: mapaBase && !oferta && !emCorrida,
+      bannerVisivel: mapaBase && !oferta && !emCorrida && s.banner && (this.props.mostrarBanner ?? true),
+      bgCamada: s.camada ? '#EFEDF1' : '#FFFFFF', corCamada: s.camada ? '#1C1A1F' : '#9D9CA1',
+      slotConectar: s.status === 'OFFLINE', slotCarregando: s.status === 'CARREGANDO', slotBuscando: s.status === 'BUSCANDO',
+      ganhosFmt: fmt(s.ganhos), saldoFmt: s.ganhos.toFixed(2).replace('.', ','), baseFmt: fmt(totalBase), dinamicoFmt: fmt(s.dinamico),
+      pctBase: s.ganhos > 0 ? Math.round((totalBase / s.ganhos) * 100) : 0,
+      pctDin: s.ganhos > 0 ? Math.round((s.dinamico / s.ganhos) * 100) : 0,
+      temOferta: !!oferta, oferta: oferta || {}, duracao: dur,
+      animValor: s.fase === 'expirando' ? 'pulseval 900ms ease-in-out infinite' : 'none',
+      corrida: corrida || {}, categoriaAtiva: CATEGORIAS[tipoAtivo][0],
+      alturaSheet: s.snap === 0 ? 150 : s.snap === 1 ? 330 : 470,
+      alternarSnap: () => this.setState({ snap: (s.snap + 1) % 3 }),
+      rotuloStatus: s.corridaStatus === 'INDO_BUSCAR' ? 'A caminho' : s.corridaStatus === 'AGUARDANDO' ? 'No local' : 'Em viagem',
+      corBadgeStatus: s.corridaStatus === 'EM_VIAGEM' ? '#26292E' : '#FEF8CC',
+      corTextoBadge: s.corridaStatus === 'EM_VIAGEM' ? '#FFFFFF' : '#7a6a00',
+      rotuloTrecho: s.corridaStatus === 'EM_VIAGEM' ? 'Destino' : 'Embarque',
+      corTrechoAtual: s.corridaStatus === 'EM_VIAGEM' ? '#EE542C' : '#24D279',
+      enderecoTrecho: s.corridaStatus === 'EM_VIAGEM' ? (corrida ? corrida.enderecoDestino : '') : (corrida ? corrida.enderecoOrigem : ''),
+      botaoAndando: emCorrida && andando,
+      botaoSimples: emCorrida && !andando && s.corridaStatus !== 'EM_VIAGEM',
+      botaoDeslizar: emCorrida && !andando && s.corridaStatus === 'EM_VIAGEM',
+      rotuloAndando: s.corridaStatus === 'EM_VIAGEM' ? 'Em viagem' : 'A caminho da origem',
+      rotuloBotao: s.corridaStatus === 'AGUARDANDO' ? 'Iniciar viagem' : 'Cheguei',
+      corBotaoAcao: s.corridaStatus === 'AGUARDANDO' ? '#24D279' : '#F8D60B',
+      corTextoBotao: s.corridaStatus === 'AGUARDANDO' ? '#FFFFFF' : '#1C1A1F',
+      slidePx: s.slide, opacidadeRotulo: Math.max(0, 1 - s.slide / 180),
+      slideDown: e => this.slideDown(e), slideMove: e => this.slideMove(e), slideUp: () => this.slideUp(),
+      avancarCorrida: () => this.avancarCorrida(),
+      drawerEsq: s.drawer === 'esq',
+      corToggle: s.destinoOn ? '#F8D60B' : '#DCDAE0', posToggle: s.destinoOn ? 'flex-end' : 'flex-start',
+      toggleDestino: () => this.setState({ destinoOn: !s.destinoOn }),
+      pillFase: tipoAtivo.charAt(0) + tipoAtivo.slice(1).toLowerCase() + ' • Fase 1',
+      tipoAtivo: tipoAtivo.charAt(0) + tipoAtivo.slice(1).toLowerCase(),
+      pushAberto, pushVeu: pushAberto, pushX: s.pushX,
+      transicaoPush: s.pushArrasto ? 'none' : 'transform 300ms cubic-bezier(.2,.8,.2,1)',
+      animPush: s.pushSeq % 2 === 0 ? 'pushin 300ms ease-out both' : 'pushin2 300ms ease-out both',
+      transformBase: pushAberto ? 'translateX(-30%)' : 'translateX(0)',
+      transicaoBase: 'transform 300ms ease-out',
+      bordaDown: e => this.bordaDown(e), bordaMove: e => this.bordaMove(e), bordaUp: () => this.bordaUp(),
+      cursorBorda: s.pushArrasto ? 'grabbing' : 'grab',
+      voltarPush: () => this.voltarPush(),
+      telaPrefSolic: s.tela === 'prefsolic', telaPrefServicos: s.tela === 'prefservicos',
+      categorias: CATEGORIAS[tipoAtivo].map(nome => {
+        const on = s.catsOff.indexOf(nome) === -1;
+        return {
+          key: nome, nome, bg: on ? '#1C1A1F' : '#DCDAE0', pos: on ? 'flex-end' : 'flex-start',
+          toggle: () => this.setState({ catsOff: on ? s.catsOff.concat([nome]) : s.catsOff.filter(x => x !== nome) })
+        };
+      }),
+      telaTeste: s.tela === 'teste', testeRodando: s.tela === 'teste' && s.testeStep < 6, testeCompleto: s.testeStep >= 6,
+      anelOffset: 377 - 377 * (s.testeStep / 6), anelTexto: s.testeStep + '/6',
+      checklist: CHECK.map((nome, i) => ({
+        key: nome, nome, ok: i < s.testeStep, testando: i === s.testeStep, pendente: i > s.testeStep,
+        cor: i < s.testeStep ? '#1C1A1F' : '#9D9CA1'
+      })),
+      reiniciarTeste: () => { this.limpar(); this.setState({ testeStep: 0 }); this.rodarTeste(); },
+      telaFacial: s.tela === 'facial',
+      facialVerificando: s.facial === 'verificando', facialSucesso: s.facial === 'sucesso', facialFalha: s.facial === 'falha',
+      corOval: s.facial === 'sucesso' ? '#24D279' : s.facial === 'falha' ? '#EB312B' : '#2445A6',
+      animOval: s.facial === 'falha' ? 'tremer 300ms ease-in-out both' : s.facial === 'sucesso' ? 'bateu 400ms ease-out both' : 'none',
+      animBateu: s.facial === 'sucesso' ? 'bateu 400ms ease-out both' : 'none',
+      facialTexto: s.facial === 'falha' ? 'Não conseguimos verificar. Tentar novamente.' : s.facial === 'sucesso' ? 'Tudo certo!' : 'Por favor, olhe diretamente para a câmera e posicione seu rosto dentro do oval.',
+      reiniciarFacial: () => { this.limpar(); this.setState({ facial: 'verificando' }); this.rodarFacial(); },
+      temFoto, semFoto: !temFoto, fotoEnviando: s.foto === 'enviando',
+      avatarBg: temFoto ? 'repeating-linear-gradient(135deg, #DED9E2 0 7px, #CFC9D4 7px 14px)' : '#26292E',
+      avatarConteudo: temFoto ? '' : 'DM', avatarMini: temFoto ? '' : 'DM',
+      avatarOpacidade: s.foto === 'enviando' ? 0.5 : 1,
+      sheetFoto: s.sheetFoto,
+      abrirSheetFoto: () => this.setState({ sheetFoto: true }),
+      fecharSheetFoto: () => this.setState({ sheetFoto: false }),
+      tirarFoto: () => { this.setState({ sheetFoto: false, foto: 'enviando' }); this.at(() => this.setState({ foto: 'ok' }), 1400); },
+      removerFoto: () => this.setState({ sheetFoto: false, foto: 'vazio' }),
+      telaResumo: s.tela === 'resumo', resumo: s.resumo || {}, resumoValorFmt: fmt(s.resumoValor),
+      estrelasLista: [1, 2, 3, 4, 5].map(n => ({ key: n, cor: n <= s.estrelas ? '#F8D60B' : '#DCDAE0', set: () => this.setState({ estrelas: n }) })),
+      concluirResumo: () => { this.setState({ tela: 'mapa', status: 'BUSCANDO', resumo: null }); this.agendarOferta(4000); },
+      telaCentral: s.tela === 'central', telaCarteira: s.tela === 'carteira', telaPix: s.tela === 'pix',
+      telaPerfil: s.tela === 'perfil', telaConfig: s.tela === 'config', telaConta: s.tela === 'conta', telaVeiculos: s.tela === 'veiculos',
+      historico: s.historico.map((h, i) => ({ ...h, key: i })), semHistorico: s.historico.length === 0,
+      totalCorridas: s.historico.length,
+      grafico: horas.map(h => {
+        const v = s.historico.filter(x => x.h === h).reduce((a, b) => a + b.valor, 0);
+        return { key: h, hora: h + 'h', h: Math.max(4, Math.round((v / maxHora) * 92)), cor: v > 0 ? '#F8D60B' : '#EFEDF1' };
+      }),
+      tiles: TILES.map(x => ({ key: x[0], nome: x[0], badge: x[1] })),
+      distribuicao: [[5, 92, 94], [4, 6, 6], [3, 2, 2], [2, 0, 0], [1, 0, 0]].map(d => ({ key: d[0], n: d[0], pct: d[1], qtd: d[2] })),
+      camposPessoais: [
+        { key: 'tel', nome: 'Número de telefone', valor: s.contaTel },
+        { key: 'mail', nome: 'E-mail', valor: s.contaEmail },
+        { key: 'cidade', nome: 'Cidade', valor: 'São Paulo' },
+        { key: 'senha', nome: 'Senha', valor: '••••••••' }
+      ],
+      contaNome: s.contaNome, contaEmail: s.contaEmail, contaTel: s.contaTel,
+      setContaNome: e => this.setState({ contaNome: e.target.value, contaSalvo: false }),
+      setContaEmail: e => this.setState({ contaEmail: e.target.value, contaSalvo: false }),
+      setContaTel: e => this.setState({ contaTel: e.target.value, contaSalvo: false }),
+      rotuloSalvarConta: s.contaSalvo ? 'Alterações salvas ✓' : 'Salvar Alterações',
+      salvarConta: () => this.setState({ contaSalvo: true }),
+      veiculos: s.veiculos.map((v, i) => ({
+        key: v.placa + i, tipo: v.tipo, modelo: v.modelo, placa: v.placa, arte: v.arte,
+        borda: i === s.ativo ? '#F8D60B' : '#DCDAE0',
+        marca: i === s.ativo ? '✓' : '○',
+        status: i === s.ativo ? 'Veículo ativo' : 'Tocar para ativar',
+        corStatus: i === s.ativo ? '#24D279' : '#9D9CA1', pesoStatus: i === s.ativo ? 600 : 400,
+        ativar: () => this.setState({ ativo: i, catsOff: [] })
+      })),
+      modalVeiculo: s.modalVeiculo,
+      abrirModalVeiculo: () => this.setState({ modalVeiculo: true, novoPlaca: '', novoModelo: '', novoCor: '' }),
+      fecharModalVeiculo: () => this.setState({ modalVeiculo: false }),
+      abasVeiculo: ['MOTO', 'CARRO', 'BIKE'].map(x => ({
+        key: x, nome: x.charAt(0) + x.slice(1).toLowerCase(),
+        bg: s.novoTipo === x ? '#FFFFFF' : 'transparent', sombra: s.novoTipo === x ? '0 1px 3px rgba(0,0,0,.16)' : 'none',
+        peso: s.novoTipo === x ? 700 : 500, cor: s.novoTipo === x ? '#1C1A1F' : '#9D9CA1',
+        set: () => this.setState({ novoTipo: x })
+      })),
+      novoPlaca: s.novoPlaca, novoModelo: s.novoModelo, novoCor: s.novoCor,
+      setNovoPlaca: e => this.setState({ novoPlaca: e.target.value }),
+      setNovoModelo: e => this.setState({ novoModelo: e.target.value }),
+      setNovoCor: e => this.setState({ novoCor: e.target.value }),
+      salvarVeiculo: () => {
+        const placa = (s.novoPlaca || 'NOVO000').toUpperCase();
+        const cor = s.novoCor ? ' (' + s.novoCor.toUpperCase() + ')' : '';
+        const arte = s.novoTipo === 'CARRO' ? 'foto carro' : s.novoTipo === 'BIKE' ? 'foto bike' : 'foto moto';
+        this.setState({
+          veiculos: s.veiculos.concat([{ tipo: s.novoTipo, modelo: s.novoModelo || 'Sem modelo', placa: placa + cor, arte }]),
+          ativo: s.veiculos.length, modalVeiculo: false, catsOff: []
+        });
+      },
+      pixNome: s.pixNome, pixCpf: s.pixCpf, pixConta: s.pixConta, pixDigito: s.pixDigito, pixAgencia: s.pixAgencia,
+      setPixNome: e => this.setState({ pixNome: e.target.value }),
+      setPixCpf: e => this.setState({ pixCpf: e.target.value }),
+      setPixConta: e => this.setState({ pixConta: e.target.value }),
+      setPixDigito: e => this.setState({ pixDigito: e.target.value }),
+      setPixAgencia: e => this.setState({ pixAgencia: e.target.value }),
+      tiposConta: TIPOS_CONTA.map(x => ({
+        key: x, nome: x, cor: s.pixTipo === x ? '#1C1A1F' : '#DCDAE0',
+        dot: s.pixTipo === x ? '#1C1A1F' : 'transparent', set: () => this.setState({ pixTipo: x })
+      })),
+      bgContinuar: pixOk ? '#F8D60B' : '#DCDAE0', corContinuar: pixOk ? '#1C1A1F' : '#9D9CA1',
+      enviarPix: () => { if (pixOk) this.push('carteira'); },
+      telaSplash: s.tela === 'splash', animSplash: s.tela === 'splash' ? 'fadeout 800ms ease-in-out 400ms forwards' : 'none',
+      corStatusBar: claro ? '#FFFFFF' : '#1C1A1F', statusBarClara: claro, statusBarEscura: !claro,
+      scrimStatus: mapaBase && s.tela !== 'splash',
+      corHomeIndicator: oferta ? '#FFFFFF' : '#1C1A1F',
+      abrirEsq: () => this.setState({ drawer: 'esq' }),
+      fecharDrawer: () => this.setState({ drawer: null }),
+      fecharBanner: () => this.setState({ banner: false }),
+      toggleCamada: () => this.setState({ camada: !s.camada }),
+      conectar: () => this.conectar(), aceitar: () => this.aceitar(), recusar: () => this.recusar(),
+      irTeste: () => this.push('teste'), irCentral: () => this.push('central'), irCarteira: () => this.push('carteira'),
+      irPix: () => this.push('pix'), irPerfil: () => this.push('perfil'), irConfig: () => this.push('config'),
+      irConta: () => this.push('conta'), irVeiculos: () => this.push('veiculos'),
+      irPrefSolic: () => this.push('prefsolic'), irPrefServicos: () => this.push('prefservicos'),
+      voltarMapa: () => this.setState({ tela: 'mapa', drawer: null, pushX: 0 }),
+      mostrarDebug: this.props.mostrarDebug ?? true,
+      estadoDebug,
+      debugRota: (s.rotaIdx + 1) + '/5 · ' + t.pv.vertices + ' vért. · ' + um(t.km) + 'km',
+      debugProgresso: Math.round(s.prog * 100) + '% · ' + Math.round(s.ang) + '°',
+      debugCamera: emCorrida ? (s.segue ? 'seguindo' : 'solta (arraste)') : foraDoCentro ? 'deslocada' : 'centrada',
+      corDebugCamera: emCorrida && !s.segue ? '#F4C372' : '#fff',
+      zonaDebug: faixaFmt(zmin, zmax) + ' · ' + (zmin >= 2.2 ? 'muito quente' : zmin >= 1.4 ? 'quente' : 'aquecida'),
+      bgChuva: s.chuva ? '#4A90D9' : '#26242b', corChuva: s.chuva ? '#FFFFFF' : '#DCDAE0', rotuloChuva: s.chuva ? 'ON' : 'off',
+      bgEvento: s.evento ? '#EE542C' : '#26242b', corEvento: s.evento ? '#FFFFFF' : '#DCDAE0', rotuloEvento: s.evento ? 'ON' : 'off',
+      toggleChuva: () => this.setState({ chuva: !s.chuva }, () => this.tickDemanda()),
+      toggleEvento: () => this.setState({ evento: !s.evento }, () => this.tickDemanda()),
+      forcarOferta: () => { this.limpar(); cancelAnimationFrame(this.loopId); this.setState({ tela: 'mapa', status: 'BUSCANDO', corrida: null, corridaStatus: null, chegada: null }, () => this.gerarOferta()); },
+      proximoTrajeto: () => this.setState({ rotaIdx: (s.rotaIdx + 1) % TRAJETOS.length, prog: 0, chegada: null }),
+      pularChegada: () => { if (andando) this.setState({ prog: 0.985 }); },
+      resetar: () => {
+        this.limpar(); cancelAnimationFrame(this.loopId); this.zonas = this.criarZonas();
+        this.setState({ tela: 'splash', status: 'OFFLINE', ganhos: 0, dinamico: 0, historico: [], banner: true, camada: true, chuva: false, evento: false, oferta: null, corrida: null, corridaStatus: null, resumo: null, chegada: null, prog: 0, ang: 0, offX: 0, offY: 0, zoom: 1, segue: true, foto: 'ok', ativo: 0, catsOff: [], rotaIdx: 0, zonas: this.zonas.map(zz => ({ ...zz })) });
+        this.at(() => this.setState({ tela: 'mapa' }), 1200);
+      }
+    };
+  }
+}
+
+</script>
+</body>
+</html>
