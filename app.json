@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "99motorista",
+    "slug": "99motorista",
+    "version": "1.0.0",
+    "scheme": "99motorista",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-audio",
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "O 99 Motorista acessa suas fotos para você escolher uma imagem de perfil.",
+          "cameraPermission": "O 99 Motorista usa a câmera para você tirar uma foto de perfil."
+        }
+      ]
+    ]
+  }
+}
